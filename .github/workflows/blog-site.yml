@@ -1,4 +1,4 @@
-name: frontend CI/CD
+name: FullStack CI/CD
 
 on:
   push:
@@ -9,9 +9,8 @@ on:
     branches:
       - dev
       - master
-
 jobs:
-  test:
+  frontend-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,16 +20,49 @@ jobs:
         uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
+        working-directory: ./frontend
         run: bun install
 
       - name: Run lint
+        working-directory: ./frontend
         run: bun run lint
       - name: Run test
+        working-directory: ./frontend
         run: bun test
-        
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: composer install
+
+      - name: Copy .env
+        working-directory: ./backend
+        run: cp .env.example .env
+
+      - name: Generate APP_KEY
+        working-directory: ./backend
+        run: php artisan key:generate
+
+      - name: Run migrations
+        working-directory: ./backend
+        run: php artisan migrate --force
+
+      - name: Run tests
+        working-directory: ./backend
+        run: |
+          php artisan test
   create-pull-request:
     if: github.event_name == 'push'
-    needs: test
+    needs: [backend-test, frontend-test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -38,7 +70,7 @@ jobs:
 
       - name: Check and Create Pull Request
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_ACTION_TOKEN }}
+          GH_TOKEN: ${{ secrets.ACTION_TOKEN }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -51,3 +83,4 @@ jobs:
           else
             echo "No changes to create a PR for."
           fi
+
