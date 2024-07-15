@@ -20,11 +20,14 @@ jobs:
         uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
-        run: bun init || bun install
+        working-directory: ./frontend
+        run: bun install
 
       - name: Run lint
+        working-directory: ./frontend
         run: bun run lint
       - name: Run test
+        working-directory: ./frontend
         run: bun test
   backend-test:
     runs-on: ubuntu-latest
