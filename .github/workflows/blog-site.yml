@@ -31,6 +31,21 @@ jobs:
         run: bun test
   backend-test:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: /secrets/mysql_root_password
+          MYSQL_DATABASE: /secrets/mysql_test_database
+          MYSQL_USER: /secrets/mysql_user
+          MYSQL_PASSWORD: /secrets/mysql_password
+        ports:
+          - 3308:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -47,6 +62,23 @@ jobs:
       - name: Copy .env
         working-directory: ./backend
         run: cp .env.example .env
+
+      - name: Update .env for GitHub Actions
+        working-directory: ./backend
+        run: |
+          echo "DB_CONNECTION=mysql_testing" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3308" >> .env
+          echo "DB_DATABASE=/secrets/mysql_test_database" >> .env
+          echo "DB_USERNAME=/secrets/mysql_user" >> .env
+          echo "DB_PASSWORD=/secrets/mysql_password" >> .env
+      - name: Install dockerize
+        run: |
+          curl -sSL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | sudo tar -C /usr/local/bin -xzv
+
+      - name: Wait for MySQL
+        run: |
+          dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
 
       - name: Generate APP_KEY
         working-directory: ./backend
