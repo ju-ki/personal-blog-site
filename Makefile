@@ -33,3 +33,5 @@ cache-clear:
 	docker-compose exec web php artisan view:clear
 db:
 	docker-compose exec db bash
+analyse:
+	docker-compose exec web ./vendor/bin/phpstan analyse

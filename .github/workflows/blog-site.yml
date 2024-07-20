@@ -88,6 +88,10 @@ jobs:
         working-directory: ./backend
         run: php artisan migrate --force
 
+      - name: Run Larastan
+        working-directory: ./backend
+        run: ./vendor/bin/phpstan analyse
+
       - name: Run tests
         working-directory: ./backend
         run: |
