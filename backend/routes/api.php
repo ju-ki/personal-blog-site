@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Controllers\API\PostController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
 
-Route::get('/test-db', function () {
-    return User::all();
-});
+Route::apiResource('posts', PostController::class);
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
+
+
+Route::get('/posts', [PostController::class, 'index']);
