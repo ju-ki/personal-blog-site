@@ -16,6 +16,9 @@ migrate:
 	docker-compose exec web php artisan migrate
 migrate-status:
 	docker-compose exec web php artisan migrate:status
+route:
+	docker-compose exec web php artisan route:cache
+	docker-compose exec web php artisan route:list
 rollback:
 	docker-compose exec web php artisan migrate:rollback
 fresh:
