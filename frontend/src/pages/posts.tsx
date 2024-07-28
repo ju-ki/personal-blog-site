@@ -1,25 +1,19 @@
 import Layout from '@/components/Common/Layout';
 import PostCard from '@/components/Posts/Card';
-import axios from 'axios';
+import { fetchAllPosts } from '@/hooks/api/posts';
+import { Article } from '@/types/article';
 import React, { useEffect, useState } from 'react';
 
-type PostType = {
-  id: number;
-  title: string;
-  content: string;
-};
-
 const Posts = () => {
-  const [posts, setPosts] = useState<PostType[]>([]);
+  const [posts, setPosts] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost/api/posts');
-      console.log(response);
+      const posts: Article[] = await fetchAllPosts();
       setLoading(false);
-      setPosts(response.data);
+      setPosts(posts);
     } catch (err) {
       console.log(err);
     }
