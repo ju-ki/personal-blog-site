@@ -3,25 +3,20 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-
+use App\Services\PostService;
 
 class PostController extends Controller
 {
+    protected PostService $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;;
+    }
     //
     public function index()
     {
-        return response()->json([
-            [
-                'id' => 1,
-                'title' => '記事1',
-                'content' => '記事1の内容',
-            ],
-            [
-                'id' => 2,
-                'title' => '記事2',
-                'content' => '記事2の内容',
-            ],
-
-        ], 200);
+        $posts = $this->postService->get_posts();
+        return response()->json($posts, 200);
     }
 }

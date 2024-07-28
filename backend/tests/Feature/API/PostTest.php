@@ -21,6 +21,7 @@ class PostTest extends TestCase
             '*' => [
                 'id',
                 'title',
+                'tags',
                 'content'
             ],
         ]);
