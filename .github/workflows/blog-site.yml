@@ -28,7 +28,7 @@ jobs:
         run: bun run lint
       - name: Run run test
         working-directory: ./frontend
-        run: bun test
+        run: bun run test
   backend-test:
     runs-on: ubuntu-latest
     services:
