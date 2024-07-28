@@ -24,7 +24,7 @@ const PostCard: React.FC<Props> = ({ article }) => {
           <div className='text-gray-600 text-xs mb-2'>読了時間: 約半分程度</div>
           <div className='text-gray-600 text-xs mb-2'>作成日: 2024/5/24</div>
         </div>
-        <div className='text-gray-700 text-base mb-2'>{article.content.slice(0, 500)}...</div>
+        <div className='text-gray-700 text-base mb-2'>{article.content.slice(0, 500)}</div>
       </div>
     </div>
   );
