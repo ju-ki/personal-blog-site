@@ -7,9 +7,13 @@ down:
 restart:
 	@make down
 	@make up
+php-unit:
+	docker-compose exec web php artisan test
+jest:
+	cd frontend && bun run test
 test:
 	docker-compose exec web php artisan test
-	cd frontend && bun test
+	cd frontend && bun run test
 tinker:
 	docker-compose exec web php artisan tinker
 migrate:
