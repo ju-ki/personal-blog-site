@@ -2,6 +2,7 @@
 
 use App\Providers\FortifyServiceProvider;
 use Illuminate\Support\Facades\App;
+use Spatie\Permission\PermissionServiceProvider;
 
 return [
 
@@ -127,7 +128,8 @@ return [
     ],
 
     'provider' => [
-        FortifyServiceProvider::class
+        FortifyServiceProvider::class,
+        PermissionServiceProvider::class,
     ]
 
 ];
