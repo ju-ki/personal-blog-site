@@ -45,8 +45,35 @@ class AuthTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
+    /**
+     * ゲスト認証処理
+     *
+     * @return void
+     */
     public function test_user_is_not_authenticated_without_login()
     {
         $this->assertGuest();
+    }
+
+    /**
+     * ログイン成功時のリダイレクト処理
+     *
+     * @return void
+     */
+    public function test_redirect_after_successful_login()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+        $response = $this->post('/api/login', [
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(302);
+
+        $response->assertRedirect('/admin');
+        $this->assertAuthenticatedAs($user);
     }
 }

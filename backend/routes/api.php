@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PostController;
 use Illuminate\Http\Request;
@@ -14,3 +15,6 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('/posts', [PostController::class, 'index']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin');
+});
