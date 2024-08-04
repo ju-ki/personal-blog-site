@@ -33,10 +33,10 @@ class PostService
     }
 
     /**
-     * Undocumented function
+     * 記事作成
      *
      * @param Post $post
-     * @return 
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create(Post $post)
     {
