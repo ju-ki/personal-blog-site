@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Post;
+use Illuminate\Http\Request;
 
 class PostService
 {
@@ -28,5 +30,19 @@ class PostService
         );
 
         return $posts;
+    }
+
+    /**
+     * 記事作成
+     *
+     * @param Post $post
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create(Post $post)
+    {
+        // 記事の作成処理
+        $newPosts = $post->save();
+
+        return response()->json(['data' => $newPosts, 'message' => '記事を登録しました'], 201);
     }
 }

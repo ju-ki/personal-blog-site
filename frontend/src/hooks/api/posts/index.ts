@@ -1,10 +1,13 @@
-import axios from 'axios';
+import { AxiosResponseType } from '@/types/common';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { getInitCSRFSetting } from '../auth';
 
 type PostType = {
-  id: number;
+  id?: number;
   title: string;
-  tag: string[];
+  tag?: string[];
   content: string;
+  user_id?: number;
 };
 
 export async function fetchAllPosts(): Promise<PostType[]> {
@@ -13,5 +16,23 @@ export async function fetchAllPosts(): Promise<PostType[]> {
     return response.data as PostType[];
   } catch (error) {
     throw new Error('記事情報の取得に失敗しました');
+  }
+}
+
+export async function createNewPost(postType: PostType): Promise<AxiosResponseType> {
+  try {
+    await getInitCSRFSetting();
+    const response = await axios.post('http://localhost/api/posts/create', postType, {
+      withCredentials: true,
+      withXSRFToken: true,
+    });
+    return { status: response.status, data: response.data };
+  } catch (err) {
+    const axiosError = err as AxiosError;
+    if (axiosError.response && axiosError.response.status === 422) {
+      const axiosResponse = axiosError.response as AxiosResponse;
+      return { status: 422, message: axiosResponse.data.message };
+    }
+    return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
   }
 }

@@ -15,6 +15,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('/posts', [PostController::class, 'index']);
+Route::post('/posts/create', [PostController::class, 'create']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
 });
