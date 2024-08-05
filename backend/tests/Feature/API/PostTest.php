@@ -52,4 +52,24 @@ class PostTest extends TestCase
 
         $response->assertStatus(201);
     }
+
+    /**
+     * 記事作成に認証情報がない場合のHTTPレスポンステスト
+     */
+    public function test_api_create_post_without_authentication(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->post('/api/posts/create', [
+            'title' => 'Test Post',
+            'content' => 'Test Content',
+            'user_id' => $user->id,
+
+        ]);
+
+        $response->assertStatus(500);
+    }
 }

@@ -25,11 +25,10 @@ class PostController extends Controller
 
     public function create(Request $request)
     {
-        \Log::debug(Auth::id());
         $post = new Post();
         $post->title = $request->title;
         $post->content = $request->content;
-        $post->user_id = $request->user_id;
+        $post->user_id = Auth::id();
         $posts = $this->postService->create($post);
 
         return response()->json($posts, 201);

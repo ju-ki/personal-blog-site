@@ -15,7 +15,8 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('/posts', [PostController::class, 'index']);
-Route::post('/posts/create', [PostController::class, 'create']);
-Route::middleware(['auth:sanctum'])->group(function () {
+//auth:sanctumだけで行けるらしいが、401が出てしまうので一時的に両方出すようにする
+Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
+    Route::post('/posts/create', [PostController::class, 'create']);
 });
