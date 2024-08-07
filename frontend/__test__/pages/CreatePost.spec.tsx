@@ -1,7 +1,9 @@
+import { login } from '@/hooks/api/auth';
 import { createNewPost } from '@/hooks/api/posts';
 import CreatePost from '@/pages/create_post';
 import { fireEvent, render, screen } from '@testing-library/react';
 import axios from 'axios';
+import { act } from 'react';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -33,25 +35,33 @@ describe('バリデーションチェック', () => {
     expect(await screen.findByText('タイトルを入力して下さい'));
     expect(await screen.findByText('コンテントを入力して下さい'));
   });
-  //認証処理が間違えているため一旦消去
-  // it('送信テスト(成功)', async () => {
-  //   render(<CreatePost />);
-  //   const mockResult = {
-  //     response: {
-  //       status: 201,
-  //       data: {
-  //         title: 'Test Title',
-  //         content: 'Test Content',
-  //       },
-  //     },
-  //   };
-  //   mockedAxios.post.mockResolvedValue(mockResult);
-  //   fireEvent.change(screen.getByLabelText('タイトル'), { target: { value: 'Test Title' } });
-  //   fireEvent.change(screen.getByLabelText('コンテント'), { target: { value: 'Test Content' } });
-  //   fireEvent.click(screen.getByText('投稿'));
 
-  //   const result = await createNewPost({ title: 'Test Title', content: 'Test Content', user_id: 3 });
-  //   expect(result.status).toBe(201);
-  //   expect(result.data).toEqual(mockResult.response.data);
-  // });
+  it('送信テスト(成功)', async () => {
+    const mockLoginResponse = { status: 200, data: 'success' };
+    mockedAxios.post.mockResolvedValueOnce(mockLoginResponse);
+
+    await act(async () => {
+      const loginResult = await login({ email: 'test@example.com', password: 'password' });
+      expect(loginResult.status).toBe(200);
+    });
+
+    render(<CreatePost />);
+    const mockPostResponse = {
+      status: 201,
+      data: {
+        title: 'Test Title',
+        content: 'Test Content',
+      },
+    };
+    mockedAxios.post.mockResolvedValueOnce(mockPostResponse);
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText('タイトル'), { target: { value: 'Test Title' } });
+      fireEvent.change(screen.getByLabelText('コンテント'), { target: { value: 'Test Content' } });
+      fireEvent.click(screen.getByText('投稿'));
+
+      const result = await createNewPost({ title: 'Test Title', content: 'Test Content', user_id: 3 });
+      expect(result.status).toBe(201);
+      expect(result.data).toEqual(mockPostResponse.data);
+    });
+  });
 });
