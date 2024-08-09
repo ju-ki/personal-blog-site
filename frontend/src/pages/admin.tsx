@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import React, { useState } from 'react';
+import CreatePost from '@/pages/create_post';
 
 const Admin = () => {
   const [selectedTab, setSelectedTab] = useState('dashboard');
@@ -90,6 +91,7 @@ const Admin = () => {
             <h1 className='text-3xl font-bold mb-4'>記事作成</h1>
             <Card className='p-4'>
               <p>ここに記事作成フォームを表示します。</p>
+              <CreatePost />
             </Card>
           </div>
         )}

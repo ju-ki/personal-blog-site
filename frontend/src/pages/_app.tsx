@@ -1,6 +1,32 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import { getUser } from '@/hooks/api/auth';
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function App({ Component, pageProps }: AppProps) {
+  const user = useRouter();
+  const pathName = usePathname();
+
+  useEffect(() => {
+    if (pathName.match('/admin/*')) {
+      fetchUser();
+    }
+  }, [pathName]);
+
+  const fetchUser = async () => {
+    try {
+      const response = await getUser();
+      if (response.status === 401 || response.status === 500) {
+        user.push('/login');
+        return;
+      }
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+      user.push('/login');
+    }
+  };
   return <Component {...pageProps} />;
 }
