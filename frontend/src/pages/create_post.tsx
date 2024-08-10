@@ -1,3 +1,4 @@
+import Editor from '@/components/Posts/Card/Editor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,7 +33,7 @@ const CreatePost = () => {
   };
   return (
     <>
-      <div className='max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg'>
+      <div className='max-w-2xl mx-auto mt-10 p-6  rounded-lg shadow-lg'>
         <div className='text-2xl font-bold mb-4'>記事投稿</div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='mb-4'>
@@ -57,7 +58,9 @@ const CreatePost = () => {
               id='content'
               className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-40'
             ></textarea>
+            <Editor />
           </div>
+          <div></div>
           <div className='text-right'>
             <Button className='px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'>
               投稿
