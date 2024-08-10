@@ -38,3 +38,21 @@ export async function login(data: FormData): Promise<AxiosResponseType> {
     return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
   }
 }
+
+export async function getUser(): Promise<AxiosResponseType> {
+  try {
+    const response = await axios('http://localhost/api/user', {
+      withCredentials: true,
+      withXSRFToken: true,
+    });
+    return { status: 200, data: response };
+  } catch (error) {
+    console.log(error);
+    const axiosError = error as AxiosError;
+    if (axiosError.response && axiosError.response.status === 422) {
+      const axiosResponse = axiosError.response as AxiosResponse;
+      return { status: 422, message: axiosResponse.data.message };
+    }
+    return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
+  }
+}
