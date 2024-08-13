@@ -31,7 +31,7 @@ export const EditorTheme = {
     underlineStrikethrough: 'underline line-through',
     code: 'font-mono text-[94%] bg-gray-100 dark:bg-gray-600 dark:text-white p-1 rounded',
   },
-  code: 'bg-white dark:bg-gray-600 font-mono block py-2 px-8 leading-1 m-0 mt-2 mb-2 tab-2 overflow-x-auto relative before:absolute before:content-[attr(data-gutter)] before:bg-gray-200 dark:before:bg-gray-700 before:left-0 before:top-0 before:p-2 before:min-w-[25px] before:whitespace-pre-wrap before:text-right after:content-[attr(data-highlight-langrage)] after:right-3 after:absolute',
+  code: 'bg-gray-200 dark:bg-gray-800 font-mono block py-2 px-8 leading-1 m-0 mt-2 mb-2 tab-2 overflow-x-auto relative before:absolute before:content-[attr(data-gutter)] before:bg-gray-200 dark:before:bg-gray-700 before:left-0 before:top-0 before:p-2 before:min-w-[25px] before:whitespace-pre-wrap before:text-right after:content-[attr(data-highlight-langrage)] after:right-3 after:absolute',
   codeHighlight: {
     atrule: 'text-[#07a] dark:text-cyan-400',
     attr: 'text-[#07a] dark:text-cyan-400',
