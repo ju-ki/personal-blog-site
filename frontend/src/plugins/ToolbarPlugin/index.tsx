@@ -4,6 +4,7 @@ import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_NORMAL, createComman
 import { FC, useCallback, useEffect, useState } from 'react';
 import { HeadingTagType, $createHeadingNode } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
+import { LinkToolbarItem } from '../LinkToolbarPlugin';
 
 const SupportedBlockType = {
   paragraph: 'Paragraph',
@@ -86,6 +87,7 @@ export const ToolbarPlugin: FC = () => {
       >
         H5
       </Button>
+      <LinkToolbarItem />
     </div>
   );
 };
