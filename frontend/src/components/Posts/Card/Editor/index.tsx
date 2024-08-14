@@ -6,14 +6,17 @@ import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ToolbarPlugin } from '@/plugins/ToolbarPlugin';
 import { HeadingNode } from '@lexical/rich-text';
-import { LinkNode } from '@lexical/link';
+import { LinkNode, AutoLinkNode } from '@lexical/link';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { EditorTheme } from './Theme';
+import { validateUrl } from './Util';
+import ClickableLinkPlugin from '@/plugins/ClickablePlugin';
+import LexicalAutoLinkPlugin from '@/plugins/AutoLinkPlugin';
 
 const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
   namespace: 'MyEditor',
   theme: EditorTheme,
-  nodes: [HeadingNode, LinkNode],
+  nodes: [HeadingNode, LinkNode, AutoLinkNode],
   onError: (error) => console.error(error),
 };
 
@@ -30,7 +33,9 @@ const Editor = () => {
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
-        <LinkPlugin />
+        <LinkPlugin validateUrl={validateUrl} />
+        <ClickableLinkPlugin />
+        <LexicalAutoLinkPlugin />
       </LexicalComposer>
     </div>
   );
