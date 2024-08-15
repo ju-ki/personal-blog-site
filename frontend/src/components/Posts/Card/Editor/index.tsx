@@ -1,4 +1,4 @@
-import React, { ComponentProps, useCallback } from 'react';
+import React, { ComponentProps } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
