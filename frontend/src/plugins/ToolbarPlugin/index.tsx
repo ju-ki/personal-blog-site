@@ -5,6 +5,7 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { HeadingTagType, $createHeadingNode } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
 import { LinkToolbarItem } from '../LinkToolbarPlugin';
+import FontSizeItem from '../FontSizePlugin';
 
 const SupportedBlockType = {
   paragraph: 'Paragraph',
@@ -88,6 +89,7 @@ export const ToolbarPlugin: FC = () => {
         H5
       </Button>
       <LinkToolbarItem />
+      <FontSizeItem />
     </div>
   );
 };
