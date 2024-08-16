@@ -6,6 +6,8 @@ import { HeadingTagType, $createHeadingNode } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
 import { LinkToolbarItem } from '../LinkToolbarPlugin';
 import FontSizeItem from '../FontSizePlugin';
+import { TextColorItem } from '../TextColorPlugin';
+import { BackgroundColorItem } from '../BackgroundColorPlugin';
 
 const SupportedBlockType = {
   paragraph: 'Paragraph',
@@ -90,6 +92,8 @@ export const ToolbarPlugin: FC = () => {
       </Button>
       <LinkToolbarItem />
       <FontSizeItem />
+      <TextColorItem />
+      <BackgroundColorItem />
     </div>
   );
 };
