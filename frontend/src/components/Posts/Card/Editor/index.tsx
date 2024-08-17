@@ -12,11 +12,12 @@ import { EditorTheme } from './Theme';
 import { validateUrl } from './Util';
 import ClickableLinkPlugin from '@/plugins/ClickablePlugin';
 import LexicalAutoLinkPlugin from '@/plugins/AutoLinkPlugin';
+import { ImageNode } from '@/plugins/nodes/ImageNode';
 
 const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
   namespace: 'MyEditor',
   theme: EditorTheme,
-  nodes: [HeadingNode, LinkNode, AutoLinkNode],
+  nodes: [HeadingNode, LinkNode, AutoLinkNode, ImageNode],
   onError: (error) => console.error(error),
 };
 
