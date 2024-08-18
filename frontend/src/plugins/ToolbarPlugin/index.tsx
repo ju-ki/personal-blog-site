@@ -8,6 +8,8 @@ import { LinkToolbarItem } from '../LinkToolbarPlugin';
 import FontSizeItem from '../FontSizePlugin';
 import { TextColorItem } from '../TextColorPlugin';
 import { BackgroundColorItem } from '../BackgroundColorPlugin';
+import { ImageRegister } from '@/components/Posts/Card/Editor/Command/Image/ImageRegister';
+import { ImageItem } from '../ImagePlugin';
 
 const SupportedBlockType = {
   paragraph: 'Paragraph',
@@ -94,6 +96,8 @@ export const ToolbarPlugin: FC = () => {
       <FontSizeItem />
       <TextColorItem />
       <BackgroundColorItem />
+      <ImageItem />
+      <ImageRegister />
     </div>
   );
 };
