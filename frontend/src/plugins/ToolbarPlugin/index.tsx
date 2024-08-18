@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_NORMAL, createCommand } from 'lexical';
 import { FC, useCallback, useEffect, useState } from 'react';
-import { HeadingTagType, $createHeadingNode } from '@lexical/rich-text';
+import { HeadingTagType, $createHeadingNode, $createQuoteNode } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
 import { LinkToolbarItem } from '../LinkToolbarPlugin';
 import FontSizeItem from '../FontSizePlugin';
@@ -19,6 +19,7 @@ const SupportedBlockType = {
   h4: 'Heading 4',
   h5: 'Heading 5',
   h6: 'Heading 6',
+  quote: 'Quote',
 } as const;
 type BlockType = keyof typeof SupportedBlockType;
 
@@ -27,11 +28,9 @@ export const ToolbarPlugin: FC = () => {
   const [editor] = useLexicalComposerContext();
   const formatHeading = useCallback(
     (type: HeadingTagType) => {
-      console.log(type);
       if (blockType !== type) {
         editor.update(() => {
           const selection = $getSelection();
-          console.log(selection);
           if ($isRangeSelection(selection)) {
             $setBlocksType(selection, () => $createHeadingNode(type));
           }
@@ -39,6 +38,21 @@ export const ToolbarPlugin: FC = () => {
       }
     },
     [blockType, editor]
+  );
+
+  const formatQuote = useCallback(
+    (type: BlockType) => {
+      if (type === 'quote') {
+        editor.update(() => {
+          const selection = $getSelection();
+          if ($isRangeSelection(selection)) {
+            $setBlocksType(selection, () => $createQuoteNode());
+          }
+        });
+        setBlockType('quote');
+      }
+    },
+    [editor]
   );
   return (
     <div>
@@ -91,6 +105,16 @@ export const ToolbarPlugin: FC = () => {
         onClick={() => formatHeading('h5')}
       >
         H5
+      </Button>
+      <Button
+        type='button'
+        role='checkbox'
+        title={SupportedBlockType['quote']}
+        aria-label={SupportedBlockType['quote']}
+        aria-checked={blockType === 'quote'}
+        onClick={() => formatQuote('quote')}
+      >
+        Quote
       </Button>
       <LinkToolbarItem />
       <FontSizeItem />

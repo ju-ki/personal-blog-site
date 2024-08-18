@@ -3,7 +3,8 @@ export const EditorTheme = {
   rtl: 'rtl',
   placeholder: 'editor-placeholder',
   paragraph: 'mb-2 relative',
-  quote: 'editor-quote',
+  quote:
+    'p-4 border-l-4 border-gray-300 bg-gray-50 dark:border-gray-500 dark:bg-gray-800 rounded-md shadow-md text-gray-700 dark:text-gray-300 italic leading-relaxed',
   heading: {
     h1: 'text-3xl font-extrabold dark:text-white',
     h2: 'text-2xl font-bold dark:text-white',

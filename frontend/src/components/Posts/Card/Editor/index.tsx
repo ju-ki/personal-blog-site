@@ -5,7 +5,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ToolbarPlugin } from '@/plugins/ToolbarPlugin';
-import { HeadingNode } from '@lexical/rich-text';
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { LinkNode, AutoLinkNode } from '@lexical/link';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { EditorTheme } from './Theme';
@@ -17,7 +17,7 @@ import { ImageNode } from '@/plugins/nodes/ImageNode';
 const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
   namespace: 'MyEditor',
   theme: EditorTheme,
-  nodes: [HeadingNode, LinkNode, AutoLinkNode, ImageNode],
+  nodes: [HeadingNode, LinkNode, AutoLinkNode, ImageNode, QuoteNode],
   onError: (error) => console.error(error),
 };
 
