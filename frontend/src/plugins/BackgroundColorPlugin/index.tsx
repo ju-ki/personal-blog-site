@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
 import { $getSelection, $isRangeSelection, createCommand, LexicalEditor, TextNode } from 'lexical';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { Button } from '@/components/ui/button';
 
 const FONT_BACKGROUND_COLOR_COMMAND = createCommand<string>('FONT_BACKGROUND_COLOR_COMMAND');
 export function registerFontColorPlugin(editor: LexicalEditor) {
@@ -55,14 +56,16 @@ export const BackgroundColorItem = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <FormatColorFillIcon color={ColorType[backgroundColor]} />
+        <Button variant={'outline'}>
+          <FormatColorFillIcon color={ColorType[backgroundColor]} />
+        </Button>
       </PopoverTrigger>
-      <PopoverContent className='space-y-2'>
+      <PopoverContent>
         <RadioGroup
           defaultValue='black'
           value={backgroundColor}
           onValueChange={handleBackgroundColorChange}
-          className='space-y-2'
+          className='flex space-x-2'
         >
           <RadioGroupItem value='black' className='bg-black text-white p-2 rounded'>
             Black
