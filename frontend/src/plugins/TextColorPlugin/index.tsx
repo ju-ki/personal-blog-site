@@ -4,6 +4,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { $getSelection, $isRangeSelection, createCommand, LexicalEditor, TextNode } from 'lexical';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import TextFormatIcon from '@mui/icons-material/TextFormat';
+import { Button } from '@/components/ui/button';
 
 const FONT_COLOR_COMMAND = createCommand<string>('FONT_COLOR_COMMAND');
 export function registerFontColorPlugin(editor: LexicalEditor) {
@@ -57,10 +58,17 @@ export const TextColorItem: FC = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <TextFormatIcon color={ColorType[textColor]} />
+        <Button variant={'outline'}>
+          <TextFormatIcon color={ColorType[textColor]} />
+        </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <RadioGroup defaultValue='black' value={textColor} onValueChange={handleTextColorChange} className='space-y-2'>
+        <RadioGroup
+          className='flex space-x-2'
+          defaultValue='black'
+          value={textColor}
+          onValueChange={handleTextColorChange}
+        >
           <RadioGroupItem value='black' className='bg-black text-white p-2 rounded'>
             Black
           </RadioGroupItem>
