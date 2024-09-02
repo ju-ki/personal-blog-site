@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getSelection, $isRangeSelection } from 'lexical';
+import { $createParagraphNode, $getSelection, $isRangeSelection } from 'lexical';
 import React, { useCallback, useState } from 'react';
-import { $createQuoteNode } from '@lexical/rich-text';
+import { $createQuoteNode, $isQuoteNode } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 
@@ -28,7 +28,12 @@ const QuoteItem = () => {
         editor.update(() => {
           const selection = $getSelection();
           if ($isRangeSelection(selection)) {
-            $setBlocksType(selection, () => $createQuoteNode());
+            const currentBlockParent = selection.anchor.getNode().getParent();
+            if ($isQuoteNode(currentBlockParent)) {
+              $setBlocksType(selection, () => $createParagraphNode());
+            } else {
+              $setBlocksType(selection, () => $createQuoteNode());
+            }
           }
         });
         setBlockType('quote');

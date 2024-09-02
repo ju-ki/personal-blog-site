@@ -35,6 +35,10 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     this.__height = height;
   }
 
+  static clone(node: ImageNode): ImageNode {
+    return new ImageNode(node.__src, node.__altText, node.__width, node.__height, node.__key);
+  }
+
   createDOM(config: EditorConfig): HTMLElement {
     const span = document.createElement('span');
     const theme = config.theme;
@@ -44,6 +48,11 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
       span.className = className;
     }
     return span;
+  }
+
+  //TODO::仮
+  updateDOM(_prevNode: unknown, _dom: HTMLElement, _config: EditorConfig): boolean {
+    return true;
   }
 
   static getType(): string {
