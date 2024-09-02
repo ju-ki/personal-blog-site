@@ -1,7 +1,10 @@
 import { FC } from 'react';
 import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlignableContents';
 import Image from 'next/image';
-import { NodeKey } from 'lexical';
+import { $getNodeByKey, NodeKey } from 'lexical';
+import CloseIcon from '@mui/icons-material/Close';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { Button } from '@/components/ui/button';
 
 type Props = {
   alt: string;
@@ -12,6 +15,16 @@ type Props = {
 };
 
 const ImagePreview: FC<Props> = ({ nodeKey, alt, ...others }) => {
+  const [editor] = useLexicalComposerContext();
+
+  const handleDelete = () => {
+    editor.update(() => {
+      const node = $getNodeByKey(nodeKey);
+      if (node) {
+        node.remove();
+      }
+    });
+  };
   return (
     <BlockWithAlignableContents
       format={''}
@@ -21,7 +34,13 @@ const ImagePreview: FC<Props> = ({ nodeKey, alt, ...others }) => {
         focus: 'relative outline outline-indigo-300',
       }}
     >
-      <Image alt={alt} src={others.src} width={others.width} height={others.height} />
+      <Image alt={alt} src={others.src} width={others.width} height={others.height} className='w-full h-auto' />
+      <Button
+        className='absolute top-2 right-2 bg-gray-700 text-white rounded-full p-1 hover:bg-gray-800'
+        onClick={handleDelete}
+      >
+        <CloseIcon />
+      </Button>
     </BlockWithAlignableContents>
   );
 };

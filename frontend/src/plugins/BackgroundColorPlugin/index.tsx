@@ -34,7 +34,7 @@ const ColorType = {
   red: 'error',
   yellow: 'warning',
   green: 'success',
-  white: 'secondary',
+  white: 'disabled',
 } as const;
 
 type ColorType = keyof typeof ColorType;
@@ -82,7 +82,7 @@ export const BackgroundColorItem = () => {
           <RadioGroupItem value='yellow' className='bg-yellow-300 text-black p-2 rounded'>
             Yellow
           </RadioGroupItem>
-          <RadioGroupItem value='white' className='bg-gray-300 text-black p-2 rounded'>
+          <RadioGroupItem value='white' className='bg-white text-black p-2 rounded'>
             White
           </RadioGroupItem>
         </RadioGroup>

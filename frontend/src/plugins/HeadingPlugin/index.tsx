@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { HeadingTagType, $createHeadingNode } from '@lexical/rich-text';
-import { $getSelection, $isRangeSelection } from 'lexical';
+import { $createParagraphNode, $getSelection, $isRangeSelection, LexicalNode } from 'lexical';
 import { $setBlocksType } from '@lexical/selection';
 import React, { FC, useCallback, useState } from 'react';
+import { $isHeadingNode } from '@lexical/rich-text';
 
 const SupportedBlockType = {
   paragraph: 'Paragraph',
@@ -22,17 +23,22 @@ export const HeadingItems: FC = () => {
   const [editor] = useLexicalComposerContext();
   const formatHeading = useCallback(
     (type: HeadingTagType) => {
-      if (blockType !== type) {
-        setBlockType(type);
-        editor.update(() => {
-          const selection = $getSelection();
-          if ($isRangeSelection(selection)) {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          const currentBlockParent = selection.anchor.getNode().getParent();
+          if (currentBlockParent?.getType() === 'paragraph') {
+            $setBlocksType(selection, () => $createHeadingNode(type));
+          } else if ($isHeadingNode(currentBlockParent) && currentBlockParent.getTag() === type) {
+            $setBlocksType(selection, () => $createParagraphNode());
+          } else {
             $setBlocksType(selection, () => $createHeadingNode(type));
           }
-        });
-      }
+        }
+      });
+      setBlockType((prevBlockType) => (prevBlockType === type ? 'paragraph' : type));
     },
-    [blockType, editor]
+    [editor]
   );
   return (
     <div className='flex gap-x-1'>
