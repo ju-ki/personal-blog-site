@@ -7,11 +7,25 @@ import { FC, useState } from 'react';
 import LinkIcon from '@mui/icons-material/Link';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { Input } from '@/components/ui/input';
-import { $getSelection, $isRangeSelection } from 'lexical';
+import { $getSelection, $isRangeSelection, LexicalEditor } from 'lexical';
 
 export const LinkToolbarItem: FC = () => {
   const [url, setUrl] = useState('');
   const [editor] = useLexicalComposerContext();
+
+  function toggleLink(editor: LexicalEditor) {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const parent = anchorNode.getParent();
+
+        if ($isLinkNode(parent) || $isAutoLinkNode(parent)) {
+          editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+        }
+      }
+    });
+  }
 
   return (
     <Popover>
@@ -37,19 +51,7 @@ export const LinkToolbarItem: FC = () => {
         </Button>
         <Button
           onClick={() => {
-            editor.update(() => {
-              const selection = $getSelection();
-              if ($isRangeSelection(selection)) {
-                const anchorNode = selection.anchor.getNode();
-                const parent = anchorNode.getParent();
-
-                if ($isLinkNode(parent)) {
-                  editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
-                } else if ($isAutoLinkNode(parent)) {
-                  editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
-                }
-              }
-            });
+            toggleLink(editor);
           }}
           variant={'outline'}
         >
