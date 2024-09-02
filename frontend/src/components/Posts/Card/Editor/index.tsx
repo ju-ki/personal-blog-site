@@ -14,14 +14,14 @@ import ClickableLinkPlugin from '@/plugins/ClickablePlugin';
 import LexicalAutoLinkPlugin from '@/plugins/AutoLinkPlugin';
 import { ImageNode } from '@/plugins/nodes/ImageNode';
 
-const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
-  namespace: 'MyEditor',
-  theme: EditorTheme,
-  nodes: [HeadingNode, LinkNode, AutoLinkNode, ImageNode, QuoteNode],
-  onError: (error) => console.error(error),
-};
-
 const Editor = () => {
+  const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
+    namespace: 'MyEditor',
+    theme: EditorTheme,
+    nodes: [HeadingNode, LinkNode, AutoLinkNode, ImageNode, QuoteNode],
+    onError: (error) => console.error(error),
+  };
+
   return (
     <div className='h-full flex flex-col'>
       <LexicalComposer initialConfig={initialConfig}>
