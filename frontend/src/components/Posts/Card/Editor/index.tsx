@@ -1,4 +1,4 @@
-import React, { ComponentProps } from 'react';
+import React, { ComponentProps, useCallback } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -13,14 +13,29 @@ import { validateUrl } from './Util';
 import ClickableLinkPlugin from '@/plugins/ClickablePlugin';
 import LexicalAutoLinkPlugin from '@/plugins/AutoLinkPlugin';
 import { ImageNode } from '@/plugins/nodes/ImageNode';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { UseFormSetValue } from 'react-hook-form';
+import type { EditorState } from 'lexical';
 
-const Editor = () => {
+interface EditorProps {
+  setValue: UseFormSetValue<any>;
+  name: string;
+}
+
+const Editor: React.FC<EditorProps> = ({ setValue, name }) => {
   const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
     namespace: 'MyEditor',
     theme: EditorTheme,
     nodes: [HeadingNode, LinkNode, AutoLinkNode, ImageNode, QuoteNode],
     onError: (error) => console.error(error),
   };
+
+  const onChange = useCallback(
+    (editorState: EditorState) => {
+      setValue(name, JSON.stringify(editorState.toJSON()));
+    },
+    [name, setValue]
+  );
 
   return (
     <div className='h-full flex flex-col'>
@@ -37,6 +52,7 @@ const Editor = () => {
         <LinkPlugin validateUrl={validateUrl} />
         <ClickableLinkPlugin />
         <LexicalAutoLinkPlugin />
+        <OnChangePlugin onChange={onChange} />
       </LexicalComposer>
     </div>
   );

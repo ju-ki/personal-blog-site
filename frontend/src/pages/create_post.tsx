@@ -4,13 +4,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createNewPost } from '@/hooks/api/posts';
 import { zodResolver } from '@hookform/resolvers/zod';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const CreatePost = () => {
-  //   const router = useRouter();
+  const router = useRouter();
   const schema = z.object({
     title: z.string().min(1, 'タイトルを入力して下さい'),
     content: z.string().min(1, 'コンテントを入力して下さい'),
@@ -19,14 +19,16 @@ const CreatePost = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data: FormData) => {
     const response = await createNewPost(data);
     if (response.status === 201) {
+      alert('記事作成に成功しました');
       console.log(response);
-      //   router.push(`/admin`);
+      router.push(`/admin`);
     } else {
       console.error('記事の新規作成に失敗しました');
     }
@@ -53,12 +55,7 @@ const CreatePost = () => {
             <Label htmlFor='content' className='block text-lg font-medium text-gray-700 mb-2'>
               コンテント
             </Label>
-            <textarea
-              {...register('content')}
-              id='content'
-              className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-40'
-            ></textarea>
-            <Editor />
+            <Editor setValue={setValue} name='content' />
           </div>
           <div></div>
           <div className='text-right'>
