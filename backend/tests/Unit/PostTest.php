@@ -2,12 +2,14 @@
 
 namespace Tests\Unit;
 
+use App\Enum\PostStatus;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Tests\TestCase;
+
+use function PHPUnit\Framework\assertTrue;
 
 class PostTest extends TestCase
 {
@@ -15,49 +17,6 @@ class PostTest extends TestCase
 
     protected Post $post;
     protected PostService $service;
-    /**
-     * A basic unit test example.
-     */
-    public function test_post_get_service(): void
-    {
-        $this->service = app()->make(PostService::class);
-        $posts = $this->service->get_posts();
-
-        $this->assertIsArray($posts);
-
-        $this->assertNotEmpty($posts);
-        foreach ($posts as $post) {
-            $this->assertArrayHasKey('id', $post);
-            $this->assertArrayHasKey('title', $post);
-            $this->assertArrayHasKey('tags', $post);
-            $this->assertArrayHasKey('content', $post);
-
-            $this->assertIsInt($post['id']);
-            $this->assertIsString($post['title']);
-            $this->assertIsArray($post['tags']);
-            $this->assertIsString($post['content']);
-        }
-    }
-
-    /**
-     * 手動でブログを作成するテスト
-     *
-     * @return void
-     */
-    public function test_create_new_post_manually(): void
-    {
-        Post::factory()->create([
-            'title' => 'Test Post',
-            'content' => 'Test Content'
-        ]);
-
-        $this->assertDatabaseHas('posts', [
-            'title' => 'Test Post',
-            'content' => 'Test Content'
-        ]);
-
-        $this->assertDatabaseCount('posts', 1);
-    }
 
     /**
      * サービスを介してブログを作成するテスト
@@ -82,14 +41,89 @@ class PostTest extends TestCase
         $this->post->user_id = $user->id;
 
 
-        $this->service->create($this->post);
+        $response = $this->service->create($this->post);
+        //デフォルト時は非公開状態(仮)
+        assertTrue($response->title === 'Test Post');
+        assertTrue($response->content === 'Test Content');
+        assertTrue($response->user_id === $user->id);
+        assertTrue($response->status === 'private');
+    }
 
-        $this->assertDatabaseHas('posts', [
-            'title' => 'Test Post',
-            'content' => 'Test Content',
-            'user_id' => $user->id,
+    /**
+     * サービスを介してブログを作成するテスト(公開)
+     *
+     * @return void
+     */
+    public function test_create_new_post_with_public(): void
+    {
+        $this->service = app()->make(PostService::class);
+
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
         ]);
 
-        $this->assertDatabaseCount('posts', 1);
+        $this->actingAs($user);
+        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
+        $this->post = new Post;
+        $this->post->title = 'Test Post';
+        $this->post->content = 'Test Content';
+        $this->post->user_id = $user->id;
+        $this->post->status = 'public';
+
+
+        $response = $this->service->create($this->post);
+        assertTrue($response->title === 'Test Post');
+        assertTrue($response->content === 'Test Content');
+        assertTrue($response->user_id === $user->id);
+        assertTrue($response->status === 'public');
+    }
+
+    /**
+     * 作成した記事一覧を返すテスト(管理画面用)
+     */
+
+    public function test_get_all_posts_for_admin()
+    {
+        $this->service = app()->make(PostService::class);
+
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
+        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
+        $this->post = new Post;
+        $this->post->title = 'Test Post';
+        $this->post->content = 'Test Content';
+        $this->post->user_id = $user->id;
+        $this->post->status = 'public';
+        $this->service->create($this->post);
+
+        $this->post = new Post;
+        $this->post->title = 'Test Post2';
+        $this->post->content = 'Test Content2';
+        $this->post->user_id = $user->id;
+        $this->post->status = 'private';
+        $this->service->create($this->post);
+
+        $allPosts = $this->service->getAllPosts();
+
+        //件数テスト
+        assertTrue(count($allPosts) === 2);
+
+        //中身のテスト
+        $this->assertEquals('Test Post', $allPosts[0]->title);
+        $this->assertEquals('Test Content', $allPosts[0]->content);
+        $this->assertEquals($user->id, $allPosts[0]->user_id);
+        assertTrue($allPosts[0]->status === 'public');
+
+        $this->assertEquals('Test Post2', $allPosts[1]->title);
+        $this->assertEquals('Test Content2', $allPosts[1]->content);
+        $this->assertEquals($user->id, $allPosts[1]->user_id);
+        assertTrue($allPosts[1]->status === 'private');
     }
 }
