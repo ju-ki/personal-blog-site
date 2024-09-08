@@ -88,6 +88,10 @@ jobs:
         working-directory: ./backend
         run: php artisan migrate --force
 
+      - name: Clear PHPStan cache
+        working-directory: ./backend
+        run: rm -rf ./phpstan/cache
+
       - name: Run Larastan
         working-directory: ./backend
         run: ./vendor/bin/phpstan analyse
