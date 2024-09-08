@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import React, { useState } from 'react';
 import CreatePost from '@/pages/create_post';
+import AdminPostList from '@/components/Posts/Admin/PostList';
 
 const Admin = () => {
   const [selectedTab, setSelectedTab] = useState('dashboard');
@@ -83,6 +84,7 @@ const Admin = () => {
             <h1 className='text-3xl font-bold mb-4'>記事一覧</h1>
             <Card className='p-4'>
               <p>ここに記事一覧を表示します。</p>
+              <AdminPostList />
             </Card>
           </div>
         )}

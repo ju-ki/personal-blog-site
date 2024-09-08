@@ -3,46 +3,46 @@
 namespace App\Services;
 
 use App\Models\Post;
-use Illuminate\Http\Request;
 
 class PostService
 {
     /**
      * 記事の一覧を返却
-     *
-     * @return array
      */
     public function get_posts()
     {
-        $posts = array(
-            [
-                'id' => 1,
-                'title' => '記事1',
-                'tags' => ['Python'],
-                'content' => '記事1の内容',
-            ],
-            [
-                'id' => 2,
-                'title' => '記事2',
-                'tags' => ['PHP', 'javascript', 'HTML'],
-                'content' => '記事2の内容',
-            ],
-        );
+        //TODO: 一旦leftJoinで対応(登録時の処理ができていないため)
+        $posts = Post::all();
 
         return $posts;
+    }
+
+    /**
+     * 記事一覧を取得する
+     */
+    public function getAllPosts()
+    {
+        $allPosts = Post::all();
+        return $allPosts;
     }
 
     /**
      * 記事作成
      *
      * @param Post $post
-     * @return \Illuminate\Http\JsonResponse
+     * @return Post
      */
     public function create(Post $post)
     {
         // 記事の作成処理
-        $newPosts = $post->save();
+        $newPosts = Post::create([
+            'title' => $post->title,
+            'content' => $post->content,
+            'user_id' => $post->user_id,
+            'status' => $post->status
+        ]);
 
-        return response()->json(['data' => $newPosts, 'message' => '記事を登録しました'], 201);
+        $newPosts = Post::where('id', '=', $newPosts->id)->first();
+        return $newPosts;
     }
 }
