@@ -11,7 +11,7 @@ class PostService
     /**
      * 記事の一覧を返却
      *
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection<int, static>
      */
     public function get_posts()
     {
@@ -24,7 +24,7 @@ class PostService
     /**
      * 記事一覧を取得する
      *
-     * @return Post[]
+     * @return \Illuminate\Database\Eloquent\Collection<int, static>
      */
     public function getAllPosts()
     {
