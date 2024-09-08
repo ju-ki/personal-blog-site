@@ -8,8 +8,6 @@ class PostService
 {
     /**
      * 記事の一覧を返却
-     *
-     * @return \Illuminate\Database\Eloquent\Collection<int, App\Models\Post>
      */
     public function get_posts()
     {
@@ -21,8 +19,6 @@ class PostService
 
     /**
      * 記事一覧を取得する
-     *
-     * @return \Illuminate\Database\Eloquent\Collection<int, App\Models\Post>
      */
     public function getAllPosts()
     {
