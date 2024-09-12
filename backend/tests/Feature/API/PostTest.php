@@ -7,6 +7,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+use function PHPUnit\Framework\assertEquals;
+
 class PostTest extends TestCase
 {
     use RefreshDatabase;
@@ -71,5 +73,32 @@ class PostTest extends TestCase
         ]);
 
         $response->assertStatus(500);
+    }
+
+    /**
+     * 記事作成のHTTPレスポンステスト
+     */
+    public function test_api_get_post_detail(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
+        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
+
+        $response = $this->post('/api/posts/create', [
+            'title' => 'Test Post',
+            'content' => 'Test Content',
+            'user_id' => $user->id,
+
+        ]);
+        $response->assertStatus(201);
+
+        $detailResponse = $this->get('/api/posts/detail?id=' . $response->json('id'));
+
+        assertEquals($response->json('id'), $detailResponse->json('id'));
     }
 }

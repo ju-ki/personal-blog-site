@@ -8,6 +8,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import Link from 'next/link';
 
 export enum StatusType {
   Private = 'private',
@@ -73,7 +74,11 @@ const AdminPostList = () => {
         <tbody>
           {posts.map((post) => (
             <tr key={post.id} className='border-b'>
-              <td className='px-4 py-2'>{post.title}</td>
+              <td className='px-4 py-2'>
+                <Link className='underline' href={`/admin/post/${post.id}`}>
+                  {post.title}
+                </Link>
+              </td>
               <td className='px-4 py-2'>100</td>
               <td className='px-4 py-2'>{new Date(post.created_at).toLocaleDateString('sv-SE')}</td>
               <td className='px-4 py-2'>

@@ -25,4 +25,6 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 RUN echo "date.timezone = Asia/Tokyo" >> /usr/local/etc/php/php.ini
 
+RUN  a2enmod rewrite
+
 EXPOSE 80

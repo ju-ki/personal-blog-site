@@ -33,4 +33,11 @@ class PostController extends Controller
 
         return response()->json($posts, 201);
     }
+
+    public function show(Request $request)
+    {
+        $post_id = $request->id;
+        $detailPost = $this->postService->getPostDetail($post_id);
+        return response()->json($detailPost, 200);
+    }
 }
