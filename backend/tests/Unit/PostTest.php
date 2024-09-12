@@ -9,6 +9,7 @@ use App\Services\PostService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertTrue;
 
 class PostTest extends TestCase
@@ -125,5 +126,33 @@ class PostTest extends TestCase
         $this->assertEquals('Test Content2', $allPosts[1]->content);
         $this->assertEquals($user->id, $allPosts[1]->user_id);
         assertTrue($allPosts[1]->status === 'private');
+    }
+
+    /**
+     * 記事詳細を取得する
+     */
+    public function test_get_post_detail()
+    {
+        $this->service = app()->make(PostService::class);
+
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
+        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
+        $this->post = new Post;
+        $this->post->title = 'Test Post';
+        $this->post->content = 'Test Content';
+        $this->post->user_id = $user->id;
+        $this->post->status = 'public';
+        $response = $this->service->create($this->post);
+
+        $postDetail = $this->service->getPostDetail($response->id);
+
+        assertEquals($response->id, $postDetail->id);
+        assertEquals($response->title, $postDetail->title);
     }
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\API\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource('posts', PostController::class);
 Route::get('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'register']);
 Route::get('/user', function (Request $request) {
@@ -19,4 +18,5 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
     Route::post('/posts/create', [PostController::class, 'create']);
+    Route::get('/posts/detail', [PostController::class, 'show']);
 });

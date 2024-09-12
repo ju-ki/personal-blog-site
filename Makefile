@@ -8,7 +8,7 @@ restart:
 	@make down
 	@make up
 php-unit:
-	docker-compose exec web php artisan test
+	docker-compose exec web php artisan test --env=testing
 jest:
 	cd frontend && bun run test
 test:

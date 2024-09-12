@@ -27,6 +27,18 @@ class PostService
     }
 
     /**
+     * 記事詳細を取得する
+     *
+     * @param integer $post_id
+     * @return Post
+     */
+    public function getPostDetail(int $post_id)
+    {
+        $postDetail = Post::where('id', $post_id)->first();
+        return $postDetail;
+    }
+
+    /**
      * 記事作成
      *
      * @param Post $post

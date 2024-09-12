@@ -18,7 +18,24 @@ export async function fetchAllPosts(): Promise<PostType[]> {
     const response = await axios.get('http://localhost/api/posts');
     return response.data as PostType[];
   } catch (error) {
+    console.error(error);
     throw new Error('記事情報の取得に失敗しました');
+  }
+}
+
+export async function fetchDetailPost(postId: number): Promise<PostType> {
+  try {
+    await getInitCSRFSetting();
+    const response = await axios.get('http://localhost/api/posts/detail', {
+      params: {
+        id: postId,
+      },
+      withCredentials: true,
+      withXSRFToken: true,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('記事の詳細情報の取得に失敗しました');
   }
 }
 
