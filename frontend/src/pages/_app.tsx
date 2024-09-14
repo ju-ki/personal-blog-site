@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const pathName = usePathname();
 
   useEffect(() => {
-    if (pathName.match('/admin/*')) {
+    if (pathName && pathName.match('/admin/*')) {
       fetchUser();
     }
   }, [pathName]);
@@ -22,7 +22,6 @@ export default function App({ Component, pageProps }: AppProps) {
         user.push('/login');
         return;
       }
-      console.log(response);
     } catch (err) {
       console.log(err);
       user.push('/login');
