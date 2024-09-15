@@ -113,7 +113,7 @@ describe('ログイン処理のUIテスト', () => {
     fireEvent.click(screen.getByText('ログイン'));
 
     await waitFor(() => {
-      expect(push).toHaveBeenCalledWith('/admin');
+      expect(push).toHaveBeenCalledWith('/admin/dashboard');
     });
   });
 });
