@@ -11,6 +11,10 @@ php-unit:
 	docker-compose exec web php artisan test --env=testing
 jest:
 	cd frontend && bun run test
+action-frontend:
+	act -j "frontend-test" --container-architecture=linux/amd64
+action-backend:
+	act -j "backend-test" --container-architecture=linux/amd64
 test:
 	docker-compose exec web php artisan test
 	cd frontend && bun run test

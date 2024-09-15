@@ -1,18 +1,7 @@
 import { AxiosResponseType } from '@/types/common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { getInitCSRFSetting } from '../auth';
-import { StatusType } from '@/components/Posts/Admin/PostList';
-
-export type PostType = {
-  id: number;
-  title: string;
-  tag?: string[];
-  content: string;
-  status: StatusType;
-  user_id?: number;
-  created_at: Date;
-};
-
+import { PostType } from '@/types/article';
 export async function fetchAllPosts(): Promise<PostType[]> {
   try {
     const response = await axios.get('http://localhost/api/posts');

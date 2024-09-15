@@ -10,6 +10,7 @@ import Link from 'next/link';
 import React, { ComponentProps, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ImageNode } from '@/plugins/nodes/ImageNode';
+import AdminLayout from '@/components/Common/Layout/Admin';
 
 const PostDetail = () => {
   const [postDetail, setPostDetail] = useState<PostType>();
@@ -45,8 +46,8 @@ const PostDetail = () => {
   };
 
   return (
-    <div>
-      <Link href={'/admin'}>一覧に戻る</Link>
+    <AdminLayout>
+      <Link href={'/admin/post/list'}>一覧に戻る</Link>
       {postDetail?.title}
       <LexicalComposer initialConfig={initialConfig}>
         <RichTextPlugin
@@ -55,7 +56,7 @@ const PostDetail = () => {
           ErrorBoundary={LexicalErrorBoundary}
         />
       </LexicalComposer>
-    </div>
+    </AdminLayout>
   );
 };
 

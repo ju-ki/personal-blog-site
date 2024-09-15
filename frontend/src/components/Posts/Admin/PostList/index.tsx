@@ -1,4 +1,4 @@
-import { fetchAllPosts, PostType } from '@/hooks/api/posts';
+import { fetchAllPosts } from '@/hooks/api/posts';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,17 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-
-export enum StatusType {
-  Private = 'private',
-  Public = 'public',
-  Draft = 'draft',
-}
-const StatusNameType = {
-  private: '非公開',
-  public: '公開',
-  draft: '下書き',
-};
+import { PostType, StatusNameType, StatusType } from '@/types/article';
 
 const AdminPostList = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
