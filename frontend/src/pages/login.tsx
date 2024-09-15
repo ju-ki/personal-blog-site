@@ -34,7 +34,7 @@ const Login = () => {
     setErrorMessage('');
     const response = await login(data);
     if (response.status === 200) {
-      router.push('/admin');
+      router.push('/admin/dashboard');
     } else if (response.status === 422 && response.message) {
       setErrorMessage(response.message);
     }
