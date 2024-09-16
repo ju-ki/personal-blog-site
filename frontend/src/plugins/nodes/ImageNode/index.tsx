@@ -55,6 +55,13 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     return true;
   }
 
+  exportJSON(): SerializedLexicalNode {
+    return {
+      type: ImageNode.getType(),
+      version: 1,
+    };
+  }
+
   static getType(): string {
     return 'my-image-node';
   }
