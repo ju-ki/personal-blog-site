@@ -1,15 +1,17 @@
-import Editor from '@/components/Posts/Card/Editor';
+// import Editor from '@/components/Posts/Card/Editor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createNewPost } from '@/hooks/api/posts';
 import { zodResolver } from '@hookform/resolvers/zod';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const CreatePost = () => {
+  const Editor = dynamic(() => import('@/components/Posts/Card/Editor/index'), { ssr: false });
   const router = useRouter();
   const schema = z.object({
     title: z.string().min(1, 'タイトルを入力して下さい'),
