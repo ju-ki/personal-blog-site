@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,4 +20,5 @@ Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
     Route::post('/posts/create', [PostController::class, 'create']);
     Route::get('/posts/detail', [PostController::class, 'show']);
+    Route::post('/image/upload', [ImageController::class, 'upload']);
 });

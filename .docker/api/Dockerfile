@@ -8,12 +8,12 @@ RUN apt-get update && apt-get install -y \
     libxpm-dev \
     software-properties-common \
     zip unzip \
-    && docker-php-ext-install pdo_mysql mysqli \
     && docker-php-ext-configure gd \
-      --with-freetype \
-      --with-jpeg \
-      --with-webp \
-      --with-xpm
+        --with-freetype \
+        --with-jpeg \
+        --with-webp \
+        --with-xpm \
+    && docker-php-ext-install pdo_mysql mysqli gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
