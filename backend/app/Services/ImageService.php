@@ -15,18 +15,22 @@ class ImageService
      * @param Request $request
      * @return boolean
      */
-    public function upload(Request $request): bool
+    public function upload(Request $request): string
     {
         try {
             $selected_photo = $request->file('image');
-            $upload_path = 'images';
-            $file_name = $request->file('image')->getClientOriginalName();
+            if (is_null($selected_photo)) {
+                return '';
+            }
+            $upload_path = 'public';
+            $file_name = $selected_photo->getClientOriginalName();
 
-            $uploaded = Storage::putFileAs($upload_path, $selected_photo, $file_name, 'public');
-            return (bool) $uploaded;
+            $uploaded_path = Storage::putFileAs($upload_path, $selected_photo, $file_name);
+            $url = Storage::url($uploaded_path);
+            return $url;
         } catch (Exception $err) {
             \Log::error($err->getMessage());
-            return false;
+            return '';
         }
     }
 }

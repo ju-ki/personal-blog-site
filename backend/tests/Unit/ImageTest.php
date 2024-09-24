@@ -32,10 +32,9 @@ class ImageTest extends TestCase
         $request->files->set('image', $file);
 
         $result = $this->imageService->upload($request);
+        $this->assertEquals('/storage/test_image.jpg', $result);
 
-        $this->assertTrue($result);
-
-        Storage::disk('local')->assertExists('images/' . $file->getClientOriginalName());
+        Storage::disk('local')->assertExists('public/' . $file->getClientOriginalName());
     }
 
     /**
