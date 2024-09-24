@@ -13,7 +13,7 @@ class ImageService
      * 画像をアップロードする処理
      *
      * @param Request $request
-     * @return boolean
+     * @return string
      */
     public function upload(Request $request): string
     {
