@@ -15,7 +15,7 @@ export type SerializedImageNode = Spread<
     height?: number;
     src: string;
     width?: number;
-    type: 'image';
+    type: string;
     version: 1;
   },
   SerializedLexicalNode
@@ -39,6 +39,11 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     return new ImageNode(node.__src, node.__altText, node.__width, node.__height, node.__key);
   }
 
+  static importJSON(serializedNode: SerializedImageNode): ImageNode {
+    const { src, altText, width = 150, height = 150 } = serializedNode;
+    return new ImageNode(src, altText, width, height);
+  }
+
   createDOM(config: EditorConfig): HTMLElement {
     const span = document.createElement('span');
     const theme = config.theme;
@@ -55,8 +60,12 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     return true;
   }
 
-  exportJSON(): SerializedLexicalNode {
+  exportJSON(): SerializedImageNode {
     return {
+      src: this.__src,
+      width: this.__width,
+      height: this.__height,
+      altText: this.__altText,
       type: ImageNode.getType(),
       version: 1,
     };

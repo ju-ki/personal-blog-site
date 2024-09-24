@@ -19,8 +19,8 @@ class ImageController extends Controller
     {
         $uploaded = $this->imageService->upload($request);
 
-        if ($uploaded) {
-            return response()->json('success', 200);
+        if (!empty($uploaded)) {
+            return response()->json($uploaded, 200);
         } else {
             return response()->json('error', 500);
         }
