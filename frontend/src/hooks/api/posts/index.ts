@@ -45,3 +45,21 @@ export async function createNewPost(postType: PostType): Promise<AxiosResponseTy
     return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
   }
 }
+
+export async function updatePost(postType: PostType): Promise<AxiosResponseType> {
+  try {
+    await getInitCSRFSetting();
+    const response = await axios.post('http://localhost/api/posts/update', postType, {
+      withCredentials: true,
+      withXSRFToken: true,
+    });
+    return { status: response.status, data: response.data };
+  } catch (err) {
+    const axiosError = err as AxiosError;
+    if (axiosError.response && axiosError.response.status === 422) {
+      const axiosResponse = axiosError.response as AxiosResponse;
+      return { status: 422, message: axiosResponse.data.message };
+    }
+    return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
+  }
+}

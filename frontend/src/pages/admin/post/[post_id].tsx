@@ -1,5 +1,5 @@
 import { EditorTheme } from '@/components/Posts/Card/Editor/Theme';
-import { fetchDetailPost, PostType } from '@/hooks/api/posts';
+import { fetchDetailPost } from '@/hooks/api/posts';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
@@ -11,6 +11,7 @@ import React, { ComponentProps, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ImageNode } from '@/plugins/nodes/ImageNode';
 import AdminLayout from '@/components/Common/Layout/Admin';
+import { PostType } from '@/types/article';
 
 const PostDetail = () => {
   const [postDetail, setPostDetail] = useState<PostType>();

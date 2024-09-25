@@ -76,6 +76,42 @@ class PostTest extends TestCase
     }
 
     /**
+     * 記事更新のHTTPレスポンステスト
+     */
+    public function test_api_update_post(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
+        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
+
+        $response = $this->post('/api/posts/create', [
+            'title' => 'Test Post',
+            'content' => 'Test Content',
+            'user_id' => $user->id,
+
+        ]);
+        $response->assertStatus(201);
+
+        $updatePost = $this->post('/api/posts/update', [
+            'id' => $response->json('id'),
+            'title' => 'Test Post Updated',
+            'content' => 'Test Content',
+            'user_id' => $user->id,
+
+        ]);
+        $updatePost->assertStatus(200);
+        var_dump($updatePost->json('title'));
+
+        assertEquals($updatePost->json('id'), $response->json('id'));
+        assertEquals($updatePost->json('title'), 'Test Post Updated');
+    }
+
+    /**
      * 記事作成のHTTPレスポンステスト
      */
     public function test_api_get_post_detail(): void

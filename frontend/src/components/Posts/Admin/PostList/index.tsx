@@ -44,7 +44,7 @@ const AdminPostList = () => {
       console.log('Invalid status:', value);
     }
   };
-  const editPost = async (id: number) => {};
+
   const deletePost = async (id: number) => {};
   return (
     <>
@@ -87,12 +87,9 @@ const AdminPostList = () => {
                 </DropdownMenu>
               </td>
               <td className='px-4 py-2'>
-                <Button
-                  className='px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600'
-                  onClick={() => editPost(post.id)}
-                >
-                  編集
-                </Button>
+                <Link href={`/admin/post/edit/${post.id}`}>
+                  <Button className='px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600'>編集</Button>
+                </Link>
               </td>
               <td className='px-4 py-2'>
                 <Button

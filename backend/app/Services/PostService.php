@@ -57,4 +57,23 @@ class PostService
         $newPosts = Post::where('id', '=', $newPosts->id)->first();
         return $newPosts;
     }
+
+
+    /**
+     * 記事編集
+     *
+     * @param Post $post
+     * @return Post
+     */
+    public function updatePost(Post $post)
+    {
+        // 記事の編集処理
+        $newPosts = Post::where('id', $post->id)->update([
+            'title' => $post->title,
+            'content' => $post->content,
+        ]);
+
+        $newPosts = Post::where('id', '=', $post->id)->first();
+        return $newPosts;
+    }
 }

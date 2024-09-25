@@ -40,4 +40,15 @@ class PostController extends Controller
         $detailPost = $this->postService->getPostDetail($post_id);
         return response()->json($detailPost, 200);
     }
+    public function updatePost(Request $request)
+    {
+        $post = new Post();
+        $post->id = $request->id;
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->user_id = Auth::id();
+        $posts = $this->postService->updatePost($post);
+
+        return response()->json($posts, 200);
+    }
 }
