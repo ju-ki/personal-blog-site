@@ -19,6 +19,7 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
     Route::post('/posts/create', [PostController::class, 'create']);
+    Route::post('/posts/update', [PostController::class, 'updatePost']);
     Route::get('/posts/detail', [PostController::class, 'show']);
     Route::post('/image/upload', [ImageController::class, 'upload']);
 });

@@ -20,14 +20,18 @@ import type { EditorState } from 'lexical';
 interface EditorProps {
   setValue: UseFormSetValue<any>;
   name: string;
+  editorState?: string;
+  isEditable?: boolean;
 }
 
-const Editor: React.FC<EditorProps> = ({ setValue, name }) => {
+const Editor: React.FC<EditorProps> = ({ setValue, name, editorState, isEditable = true }) => {
   const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
     namespace: 'MyEditor',
     theme: EditorTheme,
     nodes: [HeadingNode, LinkNode, AutoLinkNode, ImageNode, QuoteNode],
     onError: (error) => console.error(error),
+    editorState: editorState && editorState,
+    editable: isEditable,
   };
 
   const onChange = useCallback(
