@@ -184,4 +184,32 @@ class PostTest extends TestCase
         assertEquals($response->id, $postDetail->id);
         assertEquals($response->title, $postDetail->title);
     }
+    /**
+     * 記事を削除する
+     */
+    public function test_delete_post_detail()
+    {
+        $this->service = app()->make(PostService::class);
+
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
+        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
+        $this->post = new Post;
+        $this->post->title = 'Test Post';
+        $this->post->content = 'Test Content';
+        $this->post->user_id = $user->id;
+        $this->post->status = 'public';
+        $response = $this->service->create($this->post);
+
+        $this->service->delete($response->id);
+
+        $this->assertDatabaseMissing('posts', [
+            'id' => $response->id,
+        ]);
+    }
 }

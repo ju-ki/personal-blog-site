@@ -1,4 +1,4 @@
-import { fetchAllPosts } from '@/hooks/api/posts';
+import { deletePost, fetchAllPosts } from '@/hooks/api/posts';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,7 +45,21 @@ const AdminPostList = () => {
     }
   };
 
-  const deletePost = async (id: number) => {};
+  const handleDeletePost = async (id: number) => {
+    setLoading(true);
+    try {
+      const response = await deletePost(id);
+      if (response.status === 200) {
+        alert('記事を削除しました');
+      } else {
+        alert('記事の削除に失敗しました');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       <div>記事一覧</div>
@@ -94,7 +108,8 @@ const AdminPostList = () => {
               <td className='px-4 py-2'>
                 <Button
                   className='px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600'
-                  onClick={() => deletePost(post.id)}
+                  onClick={() => handleDeletePost(post.id)}
+                  disabled={loading}
                 >
                   削除
                 </Button>

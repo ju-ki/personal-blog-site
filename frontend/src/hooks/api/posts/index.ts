@@ -63,3 +63,22 @@ export async function updatePost(postType: PostType): Promise<AxiosResponseType>
     return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
   }
 }
+
+export async function deletePost(id: number): Promise<AxiosResponseType> {
+  try {
+    await getInitCSRFSetting();
+    const response = await axios.delete('http://localhost/api/posts/delete', {
+      params: { id: id },
+      withCredentials: true,
+      withXSRFToken: true,
+    });
+    return { status: response.status, data: response.data };
+  } catch (err) {
+    const axiosError = err as AxiosError;
+    if (axiosError.response && axiosError.response.status === 422) {
+      const axiosResponse = axiosError.response as AxiosResponse;
+      return { status: 422, message: axiosResponse.data.message };
+    }
+    return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
+  }
+}

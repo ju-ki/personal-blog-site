@@ -76,4 +76,16 @@ class PostService
         $newPosts = Post::where('id', '=', $post->id)->first();
         return $newPosts;
     }
+
+    /**
+     * 記事削除
+     *
+     * @param integer $id
+     * @return void
+     */
+    public function delete(int $id)
+    {
+        // 記事の削除処理
+        Post::find($id)->delete();
+    }
 }
