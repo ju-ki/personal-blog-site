@@ -105,14 +105,13 @@ class PostTest extends TestCase
 
         ]);
         $updatePost->assertStatus(200);
-        var_dump($updatePost->json('title'));
 
         assertEquals($updatePost->json('id'), $response->json('id'));
         assertEquals($updatePost->json('title'), 'Test Post Updated');
     }
 
     /**
-     * 記事作成のHTTPレスポンステスト
+     * 記事詳細取得のHTTPレスポンステスト
      */
     public function test_api_get_post_detail(): void
     {
@@ -136,5 +135,36 @@ class PostTest extends TestCase
         $detailResponse = $this->get('/api/posts/detail?id=' . $response->json('id'));
 
         assertEquals($response->json('id'), $detailResponse->json('id'));
+    }
+
+    /**
+     * 記事削除のHTTPレスポンステスト
+     */
+    public function test_api_delete_post(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
+        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
+
+        $response = $this->post('/api/posts/create', [
+            'title' => 'Test Post',
+            'content' => 'Test Content',
+            'user_id' => $user->id,
+
+        ]);
+        $response->assertStatus(201);
+
+        $deletedResult = $this->delete('/api/posts/delete?id=' . $response->json('id'));
+
+        $deletedResult->assertStatus(200);
+
+        $this->assertDatabaseMissing('posts', [
+            'id' => $response->json('id'),
+        ]);
     }
 }

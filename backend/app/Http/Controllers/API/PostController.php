@@ -51,4 +51,11 @@ class PostController extends Controller
 
         return response()->json($posts, 200);
     }
+
+    public function delete(Request $request)
+    {
+        $post_id = $request->id;
+        $this->postService->delete($post_id);
+        return response()->json('success', 200);
+    }
 }

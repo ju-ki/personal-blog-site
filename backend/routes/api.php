@@ -21,5 +21,6 @@ Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::post('/posts/create', [PostController::class, 'create']);
     Route::post('/posts/update', [PostController::class, 'updatePost']);
     Route::get('/posts/detail', [PostController::class, 'show']);
+    Route::delete('/posts/delete', [PostController::class, 'delete']);
     Route::post('/image/upload', [ImageController::class, 'upload']);
 });
