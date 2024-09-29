@@ -47,12 +47,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               </Link>
             </li>
             <li>
-              <Button
-                variant='link'
-                className={`block text-left w-full py-2 ${pathName === '/admin/category/create' ? 'bg-stone-400' : ''}`}
-              >
-                カテゴリ作成
-              </Button>
+              <Link href={'/admin/category'}>
+                <Button
+                  variant='link'
+                  className={`block text-left w-full py-2 ${pathName === '/admin/category' ? 'bg-stone-400' : ''}`}
+                >
+                  カテゴリ一覧
+                </Button>
+              </Link>
             </li>
             <li>
               <Button

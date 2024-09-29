@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\PostController;
 use Illuminate\Http\Request;
@@ -23,4 +24,7 @@ Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::get('/posts/detail', [PostController::class, 'show']);
     Route::delete('/posts/delete', [PostController::class, 'delete']);
     Route::post('/image/upload', [ImageController::class, 'upload']);
+    Route::post('/categories/create', [CategoryController::class, 'create']);
 });
+
+Route::get('/categories', [CategoryController::class, 'index']);
