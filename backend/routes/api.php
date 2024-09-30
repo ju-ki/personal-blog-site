@@ -5,7 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\PostController;
-use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\API\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
