@@ -57,12 +57,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               </Link>
             </li>
             <li>
-              <Button
-                variant='link'
-                className={`block text-left w-full py-2 ${pathName === '/admin/tag/create' ? 'bg-stone-400' : ''}`}
-              >
-                タグ作成
-              </Button>
+              <Link href={'/admin/tag'}>
+                <Button
+                  variant='link'
+                  className={`block text-left w-full py-2 ${pathName === '/admin/tag' ? 'bg-stone-400' : ''}`}
+                >
+                  タグ一覧
+                </Button>
+              </Link>
             </li>
           </ul>
         </nav>
