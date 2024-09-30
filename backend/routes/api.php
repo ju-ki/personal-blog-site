@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,8 @@ Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::delete('/posts/delete', [PostController::class, 'delete']);
     Route::post('/image/upload', [ImageController::class, 'upload']);
     Route::post('/categories/create', [CategoryController::class, 'create']);
+    Route::post('/tags/create', [TagController::class, 'create']);
 });
 
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/tags', [TagController::class, 'index']);
