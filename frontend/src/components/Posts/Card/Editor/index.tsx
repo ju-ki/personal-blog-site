@@ -16,6 +16,7 @@ import { ImageNode } from '@/plugins/nodes/ImageNode';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { UseFormSetValue } from 'react-hook-form';
 import type { EditorState } from 'lexical';
+import useAutoResize from '@/hooks/api/posts/useAutoSize';
 
 interface EditorProps {
   setValue: UseFormSetValue<any>;
@@ -41,13 +42,19 @@ const Editor: React.FC<EditorProps> = ({ setValue, name, editorState, isEditable
     [name, setValue]
   );
 
+  const autoResizeRef = useAutoResize();
+
   return (
     <div className='h-full flex flex-col'>
       <LexicalComposer initialConfig={initialConfig}>
         <ToolbarPlugin />
         <RichTextPlugin
           contentEditable={
-            <ContentEditable className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-40' />
+            <ContentEditable
+              ref={autoResizeRef}
+              className='w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-40 flex-1'
+              style={{ resize: 'none', overflow: 'auto' }} // 必要に応じて追加
+            />
           }
           placeholder={<div className='editor-placeholder text-gray-500 p-4'>Write your markdown...</div>}
           ErrorBoundary={LexicalErrorBoundary}
