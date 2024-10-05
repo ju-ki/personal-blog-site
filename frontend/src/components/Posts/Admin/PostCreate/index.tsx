@@ -30,7 +30,7 @@ const CreatePost = () => {
     if (response.status === 201) {
       alert('記事作成に成功しました');
       console.log(response);
-      router.push(`/admin`);
+      router.push(`/admin/post/list`);
     } else {
       console.error('記事の新規作成に失敗しました');
     }
