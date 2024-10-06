@@ -81,7 +81,8 @@ class PostService
     /**
      * 記事ステータスの変更
      *
-     * @param Post $post
+     * @param int $post_id
+     * @param string $status
      * @return Post
      */
     public function updateStatus(int $post_id, string $status)
