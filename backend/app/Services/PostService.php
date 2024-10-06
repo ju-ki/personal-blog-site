@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\PostStatus;
 use App\Models\Post;
 
 class PostService
@@ -74,6 +75,24 @@ class PostService
         ]);
 
         $newPosts = Post::where('id', '=', $post->id)->first();
+        return $newPosts;
+    }
+
+    /**
+     * 記事ステータスの変更
+     *
+     * @param Post $post
+     * @return Post
+     */
+    public function updateStatus(int $post_id, string $status)
+    {
+        $statusNum = PostStatus::convertStatusToNum($status);
+        // 該当記事取得
+        Post::where('id', '=', $post_id)->update([
+            'status' => $statusNum
+        ]);
+
+        $newPosts = Post::where('id', '=', $post_id)->first();
         return $newPosts;
     }
 

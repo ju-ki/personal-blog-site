@@ -1,4 +1,4 @@
-import { deletePost, fetchAllPosts } from '@/hooks/api/posts';
+import { deletePost, fetchAllPosts, updatePost, updateStatus } from '@/hooks/api/posts';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { PostType, StatusNameType, StatusType } from '@/types/article';
+import Loading from '@/components/Common/Loading';
 
 const AdminPostList = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -35,13 +36,21 @@ const AdminPostList = () => {
    * @param value statusタイプ
    * @param id 記事ID
    */
-  const switchStatus = (value: string, id: number) => {
-    if (Object.values(StatusType).includes(value as StatusType)) {
-      setPosts((prevPosts) =>
-        prevPosts.map((post) => (post.id === id ? { ...post, status: value as StatusType } : post))
-      );
-    } else {
-      console.log('Invalid status:', value);
+  const switchStatus = async (value: string, id: number) => {
+    setLoading(true);
+    try {
+      const response = await updateStatus(id, value as StatusType);
+      if (Object.values(StatusType).includes(response.data.status as StatusType)) {
+        setPosts((prevPosts) =>
+          prevPosts.map((post) => (post.id === id ? { ...post, status: value as StatusType } : post))
+        );
+      } else {
+        console.log('Invalid status:', value);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,6 +126,7 @@ const AdminPostList = () => {
           ))}
         </tbody>
       </table>
+      <Loading isLoading={loading} />
     </>
   );
 };
