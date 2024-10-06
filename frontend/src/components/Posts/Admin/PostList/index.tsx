@@ -62,7 +62,6 @@ const AdminPostList = () => {
   };
   return (
     <>
-      <div>記事一覧</div>
       {loading && <p>Loading...</p>}
       <table className='min-w-full table-auto border-collapse'>
         <thead>

@@ -26,17 +26,19 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   __altText: string;
   __width: number;
   __height: number;
+  __isEditable?: boolean;
 
-  constructor(src: string, altText: string, width: number, height: number, key?: NodeKey) {
+  constructor(src: string, altText: string, width: number, height: number, key?: NodeKey, isEditable?: boolean) {
     super(key);
     this.__src = src;
     this.__altText = altText;
     this.__width = width;
     this.__height = height;
+    this.__isEditable = isEditable;
   }
 
   static clone(node: ImageNode): ImageNode {
-    return new ImageNode(node.__src, node.__altText, node.__width, node.__height, node.__key);
+    return new ImageNode(node.__src, node.__altText, node.__width, node.__height, node.__key, true);
   }
 
   static importJSON(serializedNode: SerializedImageNode): ImageNode {
@@ -83,11 +85,12 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
         width={this.__width}
         height={this.__height}
         nodeKey={this.__key}
+        isEditable={this.__isEditable ? this.__isEditable : false}
       />
     );
   }
 }
 
 export function $createImageNode({ altText, height, src, width, key }: ImagePayload): ImageNode {
-  return $applyNodeReplacement(new ImageNode(src, altText, width, height, key));
+  return $applyNodeReplacement(new ImageNode(src, altText, width, height, key, true));
 }

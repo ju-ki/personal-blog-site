@@ -37,8 +37,7 @@ const CreatePost = () => {
   };
   return (
     <>
-      <div className=' mt-10 p-6  rounded-lg shadow-lg'>
-        <div className='text-2xl font-bold mb-4'>記事投稿</div>
+      <div className='mt-10 p-6  rounded-lg shadow-lg'>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='mb-4'>
             {errors.title && <span className='text-red-500 mb-2 block'>{errors.title.message}</span>}

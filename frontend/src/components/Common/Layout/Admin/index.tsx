@@ -9,9 +9,9 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const pathName = usePathname();
   return (
-    <div className='min-h-screen flex bg-gray-100'>
+    <div className='h-screen flex bg-gray-100'>
       <aside
-        className={`fixed inset-y-0 left-0 transform ${'-translate-x-full'} md:translate-x-0 md:static md:w-64 bg-stone-200 text-white p-4 transition-transform duration-200 ease-in-out`}
+        className={`fixed top-0 left-0 h-screen w-64 bg-stone-200 text-white p-4 transition-transform duration-200 ease-in-out`}
       >
         <h2 className='text-2xl font-bold mb-6 text-black'>管理画面</h2>
         <nav>
@@ -69,7 +69,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </ul>
         </nav>
       </aside>
-      <main className='flex-1 p-6 ml-64 md:ml-0'>{children}</main>
+      <main className='min-h-screen bg-gray-100 flex-1 p-6 px-1 ml-64'>{children}</main>
     </div>
   );
 };

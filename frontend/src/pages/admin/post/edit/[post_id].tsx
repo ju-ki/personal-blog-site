@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import dynamic from 'next/dynamic';
+import Loading from '@/components/Common/Loading';
 
 const PostEdit = () => {
   const Editor = dynamic(() => import('@/components/Posts/Card/Editor/index'), { ssr: false });
@@ -65,12 +66,11 @@ const PostEdit = () => {
       <Link href={'/admin/post/list'}>一覧に戻る</Link>
       {!jsonEditorState ? (
         <>
-          <div>Loading...</div>
+          <Loading isLoading={!jsonEditorState} />
         </>
       ) : (
         <>
-          <div className='max-w-2xl mx-auto mt-10 p-6  rounded-lg shadow-lg'>
-            <div className='text-2xl font-bold mb-4'>記事投稿</div>
+          <div className='mt-10 p-6  rounded-lg shadow-lg'>
             <form onSubmit={handleSubmit(onSubmit)}>
               {errors.id && <span className='text-red-500 mb-2 block'>{errors.id.message}</span>}
               <input type='hidden' {...register('id')} />
