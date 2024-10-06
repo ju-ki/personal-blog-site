@@ -28,4 +28,14 @@ enum PostStatus: int
             default => 999,
         };
     }
+
+    public static function convertStatusToNum($value): int
+    {
+        return match ($value) {
+            'private' => 0,
+            'public' => 1,
+            'draft' => 2,
+            default => 999,
+        };
+    }
 }

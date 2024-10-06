@@ -52,6 +52,18 @@ class PostController extends Controller
         return response()->json($posts, 200);
     }
 
+    /**
+     * ステータスを変える処理
+     *
+     * @param Request $request
+     */
+    public function updateStatus(Request $request)
+    {
+        $posts = $this->postService->updateStatus($request->id, $request->status);
+
+        return response()->json($posts, 200);
+    }
+
     public function delete(Request $request)
     {
         $post_id = $request->id;

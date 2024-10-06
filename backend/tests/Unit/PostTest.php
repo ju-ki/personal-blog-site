@@ -212,4 +212,51 @@ class PostTest extends TestCase
             'id' => $response->id,
         ]);
     }
+    /**
+     * ステータスをpublicにするテスト
+     *
+     * @return void
+     */
+    public function test_update_post_status()
+    {
+        $this->service = app()->make(PostService::class);
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+        $this->post = new Post;
+        $this->post->title = 'Test Post';
+        $this->post->content = 'Test Content';
+        $this->post->user_id = $user->id;
+        $this->post->status = 'private';
+        $response = $this->service->create($this->post);
+
+        $response = $this->service->updateStatus($response->id, 'public');
+
+        assertTrue($response->status === 'public');
+    }
+
+    /**
+     * ステータスをdraftにするテスト
+     *
+     * @return void
+     */
+    public function test_update_post_status_to_draft()
+    {
+        $this->service = app()->make(PostService::class);
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+        $this->post = new Post;
+        $this->post->title = 'Test Post';
+        $this->post->content = 'Test Content';
+        $this->post->user_id = $user->id;
+        $this->post->status = 'public';
+        $response = $this->service->create($this->post);
+
+        $response = $this->service->updateStatus($response->id, 'draft');
+
+        assertTrue($response->status === 'draft');
+    }
 }

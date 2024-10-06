@@ -1,7 +1,7 @@
 import { AxiosResponseType } from '@/types/common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { getInitCSRFSetting } from '../auth';
-import { PostType } from '@/types/article';
+import { PostType, StatusType } from '@/types/article';
 export async function fetchAllPosts(): Promise<PostType[]> {
   try {
     const response = await axios.get('http://localhost/api/posts');
@@ -53,6 +53,28 @@ export async function updatePost(postType: PostType): Promise<AxiosResponseType>
       withCredentials: true,
       withXSRFToken: true,
     });
+    return { status: response.status, data: response.data };
+  } catch (err) {
+    const axiosError = err as AxiosError;
+    if (axiosError.response && axiosError.response.status === 422) {
+      const axiosResponse = axiosError.response as AxiosResponse;
+      return { status: 422, message: axiosResponse.data.message };
+    }
+    return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
+  }
+}
+
+export async function updateStatus(id: number, status: StatusType) {
+  try {
+    await getInitCSRFSetting();
+    const response = await axios.patch(
+      'http://localhost/api/posts/update/status',
+      { id: id, status: status },
+      {
+        withCredentials: true,
+        withXSRFToken: true,
+      }
+    );
     return { status: response.status, data: response.data };
   } catch (err) {
     const axiosError = err as AxiosError;

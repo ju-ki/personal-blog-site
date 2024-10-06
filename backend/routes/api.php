@@ -24,6 +24,7 @@ Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::post('/posts/update', [PostController::class, 'updatePost']);
     Route::get('/posts/detail', [PostController::class, 'show']);
     Route::delete('/posts/delete', [PostController::class, 'delete']);
+    Route::patch('/posts/update/status', [PostController::class, 'updateStatus']);
     Route::post('/image/upload', [ImageController::class, 'upload']);
     Route::post('/categories/create', [CategoryController::class, 'create']);
     Route::post('/tags/create', [TagController::class, 'create']);
