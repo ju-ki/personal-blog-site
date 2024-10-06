@@ -11,6 +11,7 @@ type Props = {
   src: string;
   width: number;
   nodeKey: NodeKey;
+  isEditable: boolean;
 };
 
 const ImagePreview: FC<Props> = ({ nodeKey, alt, ...others }) => {
@@ -24,6 +25,7 @@ const ImagePreview: FC<Props> = ({ nodeKey, alt, ...others }) => {
       }
     });
   };
+
   return (
     <BlockWithAlignableContents
       format={''}
@@ -35,10 +37,14 @@ const ImagePreview: FC<Props> = ({ nodeKey, alt, ...others }) => {
     >
       <div className='relative inline-block'>
         <Image alt={alt} src={others.src} width={others.width} height={others.height} className='w-auto h-auto' />
-        <CloseIcon
-          className='absolute top-2 right-2 bg-gray-700 text-white rounded-full hover:bg-gray-800'
-          onClick={handleDelete}
-        />
+        {others.isEditable && (
+          <>
+            <CloseIcon
+              className='absolute top-2 right-2 bg-gray-700 text-white rounded-full hover:bg-gray-800'
+              onClick={handleDelete}
+            />
+          </>
+        )}
       </div>
     </BlockWithAlignableContents>
   );

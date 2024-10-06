@@ -1,19 +1,15 @@
-import { EditorTheme } from '@/components/Posts/Card/Editor/Theme';
 import { fetchDetailPost } from '@/hooks/api/posts';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-import { LinkNode, AutoLinkNode } from '@lexical/link';
 import Link from 'next/link';
-import React, { ComponentProps, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { ImageNode } from '@/plugins/nodes/ImageNode';
 import AdminLayout from '@/components/Common/Layout/Admin';
 import { PostType } from '@/types/article';
+import Loading from '@/components/Common/Loading';
+import dynamic from 'next/dynamic';
+import { Button } from '@/components/ui/button';
 
 const PostDetail = () => {
+  const Editor = dynamic(() => import('@/components/Posts/Card/Editor/index'), { ssr: false });
   const [postDetail, setPostDetail] = useState<PostType>();
   const [jsonEditorState, setJsonEditorState] = useState<string>('');
   const router = useRouter();
@@ -33,30 +29,21 @@ const PostDetail = () => {
     }
   }
 
-  if (!jsonEditorState) {
-    return <div>Loading...</div>;
-  }
-
-  const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
-    namespace: 'MyEditor',
-    theme: EditorTheme,
-    nodes: [HeadingNode, LinkNode, AutoLinkNode, QuoteNode, ImageNode],
-    onError: (error) => console.error(error),
-    editorState: jsonEditorState,
-    editable: false,
-  };
-
   return (
     <AdminLayout>
-      <Link href={'/admin/post/list'}>一覧に戻る</Link>
-      {postDetail?.title}
-      <LexicalComposer initialConfig={initialConfig}>
-        <RichTextPlugin
-          contentEditable={<ContentEditable className='w-full px-4 py-2 bg-white h-40' />}
-          placeholder={<div className='editor-placeholder text-gray-500 p-4'></div>}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-      </LexicalComposer>
+      <Button className='mx-4' variant={'outline'}>
+        <Link href={'/admin/post/list'}>一覧に戻る</Link>
+      </Button>
+      {!jsonEditorState ? (
+        <>
+          <Loading isLoading={true} />
+        </>
+      ) : (
+        <>
+          <div className='text-4xl m-4'>{postDetail?.title}</div>
+          <Editor editorState={jsonEditorState} isEditable={false} />
+        </>
+      )}
     </AdminLayout>
   );
 };

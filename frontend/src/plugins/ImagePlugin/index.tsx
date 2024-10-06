@@ -6,6 +6,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
+import Loading from '@/components/Common/Loading';
 
 export const ImageItem: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -27,6 +28,7 @@ export const ImageItem: FC = () => {
         type='file'
         ref={fileInputRef}
         className='hidden'
+        accept='image/*'
         onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
           if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
@@ -62,11 +64,7 @@ export const ImageItem: FC = () => {
           }
         }}
       />
-      {isLoading && (
-        <div className='absolute inset-0 flex items-center justify-center bg-white bg-opacity-75'>
-          <CircularProgress />
-        </div>
-      )}
+      <Loading isLoading={isLoading} />
     </>
   );
 };
