@@ -7,20 +7,21 @@ import { ImageRegister } from '@/components/Posts/Card/Editor/Command/Image/Imag
 import { ImageItem } from '../ImagePlugin';
 import { HeadingItems } from '../HeadingPlugin';
 import QuoteItem from '../QuotePlugin';
+import { debounce } from 'lodash';
 
 export const ToolbarPlugin: FC = () => {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [isFixed, setIsFixed] = useState(false);
   useEffect(() => {
-    const handleScroll = () => {
-      const toolbar = document.querySelector('.toolbar');
+    const handleScroll = debounce(() => {
+      const toolbar = toolbarRef.current;
       if (toolbar) {
         const distanceToTop = toolbar.getBoundingClientRect().top;
         const scrollY = window.scrollY;
 
         setIsFixed(scrollY > distanceToTop);
       }
-    };
+    }, 100);
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
