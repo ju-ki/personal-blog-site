@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
@@ -26,6 +26,7 @@ class TagController extends Controller
         return response()->json($tags, 200);
     }
 
+
     /**
      * タグを新規作成する
      *
@@ -37,5 +38,32 @@ class TagController extends Controller
         $tag->name = $request->name;
         $tags = $this->tagService->create($tag);
         return response()->json($tags, 201);
+    }
+
+    /**
+     * タグを更新するAPI
+     *
+     * @param Request $request
+     */
+    public function update(Request $request)
+    {
+        $tag = new Tag;
+        $tag->id = $request->id;
+        $tag->name = $request->name;
+        $tags = $this->tagService->update($tag);
+        return response()->json($tags, 200);
+    }
+
+
+    /**
+     * タグを削除するAPI
+     *
+     * @param Request $request
+     */
+    public function delete(Request $request)
+    {
+        $tag_id = $request->id;
+        $tags = $this->tagService->delete($tag_id);
+        return response()->json($tags, 200);
     }
 }

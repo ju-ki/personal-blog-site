@@ -27,7 +27,11 @@ Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::patch('/posts/update/status', [PostController::class, 'updateStatus']);
     Route::post('/image/upload', [ImageController::class, 'upload']);
     Route::post('/categories/create', [CategoryController::class, 'create']);
+    Route::patch('/categories/update', [CategoryController::class, 'update']);
+    Route::delete('/categories/delete', [CategoryController::class, 'delete']);
     Route::post('/tags/create', [TagController::class, 'create']);
+    Route::patch('/tags/update', [TagController::class, 'update']);
+    Route::delete('/tags/delete', [TagController::class, 'delete']);
 });
 
 Route::get('/categories', [CategoryController::class, 'index']);

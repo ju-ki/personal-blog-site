@@ -64,4 +64,54 @@ class CategoryTest extends TestCase
             'name' => 'カテゴリ2'
         ]);
     }
+
+
+    /**
+     * カテゴリを更新するテスト
+     *
+     * @return void
+     */
+    public function test_update_category(): void
+    {
+        $this->categoryService = app()->make(CategoryService::class);
+        $this->category = new Category();
+        $this->category->name = 'new category';
+
+        $response = $this->categoryService->create($this->category);
+
+        $this->assertEquals('new category', $response[0]->name);
+        $this->assertEquals(4, $response[0]->id);
+
+        $this->category->name = 'updated category';
+        $this->category->id = $response[0]->id;
+
+        $response = $this->categoryService->update($this->category);
+
+        $this->assertEquals('updated category', $response[0]->name);
+        $this->assertEquals(4, $response[0]->id);
+    }
+
+
+    /**
+     * カテゴリを削除するテスト
+     *
+     * @return void
+     */
+    public function test_delete_category(): void
+    {
+        $this->categoryService = app()->make(CategoryService::class);
+        $this->category = new Category();
+        $this->category->name = 'delete category';
+
+        $response = $this->categoryService->create($this->category);
+
+        $this->assertEquals('delete category', $response[0]->name);
+        $this->assertEquals(5, $response[0]->id);
+
+        $this->categoryService->delete($response[0]->id);
+
+        $this->assertDatabaseMissing('categories', [
+            'id' => 5
+        ]);
+    }
 }

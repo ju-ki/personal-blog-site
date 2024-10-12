@@ -32,4 +32,35 @@ class TagService
         $tags = $this->get_all_tags();
         return $tags;
     }
+
+    /**
+     * タグを編集する
+     *
+     * @param Category $category
+     * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag>
+     */
+    public function update(Tag $tag): Collection
+    {
+        Tag::where('id', $tag->id)->update([
+            'name' => $tag->name
+        ]);
+
+        $tags = $this->get_all_tags();
+
+        return $tags;
+    }
+
+    /**
+     * タグを削除する
+     *
+     * @param integer $id
+     * @return Collection
+     */
+    public function delete(int $id): Collection
+    {
+        Tag::destroy($id);
+
+        $tags = $this->get_all_tags();
+        return $tags;
+    }
 }
