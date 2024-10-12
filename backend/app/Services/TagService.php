@@ -36,7 +36,7 @@ class TagService
     /**
      * タグを編集する
      *
-     * @param Category $category
+     * @param Tag $tag
      * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag>
      */
     public function update(Tag $tag): Collection
