@@ -32,4 +32,36 @@ class CategoryService
         $categories = $this->get_all_categories();
         return $categories;
     }
+
+
+    /**
+     * カテゴリを編集する
+     *
+     * @param Category $category
+     * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category>
+     */
+    public function update(Category $category): Collection
+    {
+        Category::where('id', $category->id)->update([
+            'name' => $category->name
+        ]);
+
+        $categories = $this->get_all_categories();
+
+        return $categories;
+    }
+
+    /**
+     * カテゴリを削除する
+     *
+     * @param integer $id
+     * @return Collection
+     */
+    public function delete(int $id): Collection
+    {
+        Category::destroy($id);
+
+        $categories = $this->get_all_categories();
+        return $categories;
+    }
 }
