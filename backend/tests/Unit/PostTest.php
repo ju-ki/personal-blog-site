@@ -42,7 +42,7 @@ class PostTest extends TestCase
         $this->post->user_id = $user->id;
 
 
-        $response = $this->service->create($this->post);
+        $response = $this->service->create($this->post, []);
         //デフォルト時は非公開状態(仮)
         assertTrue($response->title === 'Test Post');
         assertTrue($response->content === 'Test Content');
@@ -74,7 +74,7 @@ class PostTest extends TestCase
         $this->post->status = 'public';
 
 
-        $response = $this->service->create($this->post);
+        $response = $this->service->create($this->post, []);
         assertTrue($response->title === 'Test Post');
         assertTrue($response->content === 'Test Content');
         assertTrue($response->user_id === $user->id);
@@ -102,14 +102,14 @@ class PostTest extends TestCase
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
-        $this->service->create($this->post);
+        $this->service->create($this->post, []);
 
         $this->post = new Post;
         $this->post->title = 'Test Post2';
         $this->post->content = 'Test Content2';
         $this->post->user_id = $user->id;
         $this->post->status = 'private';
-        $this->service->create($this->post);
+        $this->service->create($this->post, []);
 
         $allPosts = $this->service->getAllPosts();
 
@@ -148,7 +148,7 @@ class PostTest extends TestCase
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
-        $response = $this->service->create($this->post);
+        $response = $this->service->create($this->post, []);
 
         $postDetail = $this->service->getPostDetail($response->id);
 
@@ -176,7 +176,7 @@ class PostTest extends TestCase
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
-        $response = $this->service->create($this->post);
+        $response = $this->service->create($this->post, []);
 
         $response->title = 'Test Post Updated';
         $postDetail = $this->service->updatePost($response);
@@ -204,7 +204,7 @@ class PostTest extends TestCase
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
-        $response = $this->service->create($this->post);
+        $response = $this->service->create($this->post, []);
 
         $this->service->delete($response->id);
 
@@ -229,7 +229,7 @@ class PostTest extends TestCase
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'private';
-        $response = $this->service->create($this->post);
+        $response = $this->service->create($this->post, []);
 
         $response = $this->service->updateStatus($response->id, 'public');
 
@@ -253,7 +253,7 @@ class PostTest extends TestCase
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
-        $response = $this->service->create($this->post);
+        $response = $this->service->create($this->post, []);
 
         $response = $this->service->updateStatus($response->id, 'draft');
 
