@@ -32,6 +32,7 @@
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "1.0.0",
     "jest": "^29.7.0",
     "lexical": "^0.17.0",
     "loadsh": "^0.0.4",

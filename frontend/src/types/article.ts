@@ -1,3 +1,5 @@
+import { TagType } from './tag';
+
 export type Article = {
   id: number;
   title: string;
@@ -18,12 +20,20 @@ export const StatusNameType = {
   draft: '下書き',
 };
 
-export type PostType = {
+export type PostTag = {
   id: number;
+  tag: TagType;
+  post_id: number;
+  tag_id: number;
+};
+
+export type PostType = {
+  id?: number;
   title: string;
   tag?: string[];
   content: string;
   status: StatusType;
   user_id?: number;
   created_at: Date;
+  post_tag: PostTag[];
 };
