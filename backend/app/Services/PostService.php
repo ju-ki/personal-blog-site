@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Enum\PostStatus;
 use App\Models\Post;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class PostService
 {
@@ -35,7 +37,7 @@ class PostService
      */
     public function getPostDetail(int $post_id)
     {
-        $postDetail = Post::where('id', $post_id)->first();
+        $postDetail = Post::with('postTag.tag')->where('id',  $post_id)->first();
         return $postDetail;
     }
 
@@ -43,20 +45,35 @@ class PostService
      * 記事作成
      *
      * @param Post $post
+     * @param array $tagIds
      * @return Post
+     * @throws Exception
      */
-    public function create(Post $post)
+    public function create(Post $post, array $tagIds)
     {
-        // 記事の作成処理
-        $newPosts = Post::create([
-            'title' => $post->title,
-            'content' => $post->content,
-            'user_id' => $post->user_id,
-            'status' => $post->status
-        ]);
+        try {
+            DB::beginTransaction();
+            // 記事の作成処理
+            $newPosts = Post::create([
+                'title' => $post->title,
+                'content' => $post->content,
+                'user_id' => $post->user_id,
+                'status' => $post->status
+            ]);
 
-        $newPosts = Post::where('id', '=', $newPosts->id)->first();
-        return $newPosts;
+            $newPosts = Post::where('id', '=', $newPosts->id)->first();
+
+            if (!empty($tagIds)) {
+                $newPosts->tags()->attach($tagIds);
+            }
+
+            DB::commit();
+            return $newPosts;
+        } catch (Exception $error) {
+            DB::rollBack();
+            \Log::error('記事作成に失敗しました:' . $error->getMessage());
+            throw new Exception('記事作成に失敗しました', 500);
+        }
     }
 
 

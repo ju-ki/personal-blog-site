@@ -7,6 +7,7 @@ import { PostType } from '@/types/article';
 import Loading from '@/components/Common/Loading';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
+import TagIcon from '@mui/icons-material/Tag';
 
 const PostDetail = () => {
   const Editor = dynamic(() => import('@/components/Posts/Card/Editor/index'), { ssr: false });
@@ -41,6 +42,18 @@ const PostDetail = () => {
       ) : (
         <>
           <div className='text-4xl m-4'>{postDetail?.title}</div>
+          <div className='flex flex-wrap gap-2 my-3'>
+            {postDetail?.post_tag.map((post_tag) => (
+              <div
+                key={post_tag.tag.id}
+                className='flex items-center space-x-2 rounded-full bg-zinc-100 px-3 py-2 border border-zinc-300 shadow-sm hover:bg-zinc-200 transition-all duration-200'
+              >
+                <TagIcon className='h-5 w-5 text-zinc-500' />
+                <div className='text-sm text-zinc-700 font-medium'>{post_tag.tag.name}</div>
+              </div>
+            ))}
+          </div>
+
           <Editor editorState={jsonEditorState} isEditable={false} />
         </>
       )}
