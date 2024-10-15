@@ -36,6 +36,7 @@ class PostController extends Controller
             $post = new Post();
             $post->title = $request->title;
             $post->content = $request->content;
+            $post->category_id = $request->category_id;
             $post->user_id = Auth::id();
             $tagsId = is_null($request->tags) ? array() : $request->tags;
             $posts = $this->postService->create($post, $tagsId);

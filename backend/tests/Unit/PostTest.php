@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Enum\PostStatus;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\PostService;
@@ -18,6 +19,15 @@ class PostTest extends TestCase
 
     protected Post $post;
     protected PostService $service;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $category = Category::factory()->create([
+            'name' => 'testCategory'
+        ]);
+    }
 
     /**
      * サービスを介してブログを作成するテスト

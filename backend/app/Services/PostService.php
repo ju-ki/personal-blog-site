@@ -37,7 +37,7 @@ class PostService
      */
     public function getPostDetail(int $post_id)
     {
-        $postDetail = Post::with('postTag.tag')->where('id',  $post_id)->first();
+        $postDetail = Post::with(['postTag.tag', 'category'])->where('id',  $post_id)->first();
         return $postDetail;
     }
 
@@ -58,7 +58,8 @@ class PostService
                 'title' => $post->title,
                 'content' => $post->content,
                 'user_id' => $post->user_id,
-                'status' => $post->status
+                'status' => $post->status,
+                'category_id' => isset($post->category_id) ? $post->category_id : 1,
             ]);
 
             $newPosts = Post::where('id', '=', $newPosts->id)->first();
