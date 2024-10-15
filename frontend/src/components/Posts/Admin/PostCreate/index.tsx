@@ -10,14 +10,16 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import TagList from '../Tag';
 import { PostType } from '@/types/article';
+import CategoryList from '../Category';
 
 const CreatePost = () => {
   const Editor = dynamic(() => import('@/components/Posts/Card/Editor/index'), { ssr: false });
   const router = useRouter();
   const schema = z.object({
     title: z.string().min(1, 'タイトルを入力して下さい'),
-    content: z.string().min(1, 'コンテントを入力して下さい'),
+    content: z.string({ message: 'コンテントは必須です' }).min(1, 'コンテントを入力して下さい'),
     tags: z.array(z.number()).max(5, 'タグは最大で5つまでです').optional(),
+    category_id: z.number({ message: 'カテゴリは必須です' }).min(1, 'カテゴリは必須です'),
   });
   type FormData = z.infer<typeof schema>;
   const {
@@ -54,6 +56,13 @@ const CreatePost = () => {
               className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               type='text'
             />
+          </div>
+          <div className='mb-4'>
+            {errors.category_id && <span className='text-red-500 mb-2 block'>{errors.category_id.message}</span>}
+            <Label htmlFor='categories' className='block text-lg font-medium text-gray-700 mb-2'>
+              カテゴリ
+            </Label>
+            <CategoryList setValue={(selectedCategoryId: number) => setValue('category_id', selectedCategoryId)} />
           </div>
           <div className='mb-4'>
             {errors.tags && <span className='text-red-500 mb-2 block'>{errors.tags.message}</span>}
