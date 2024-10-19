@@ -42,6 +42,7 @@ const PostDetail = () => {
       ) : (
         <>
           <div className='text-4xl m-4'>{postDetail?.title}</div>
+          <div className='text-sm m-4 text-zinc-700 font-medium'>{postDetail?.category?.name}</div>
           <div className='flex flex-wrap gap-2 my-3'>
             {postDetail?.post_tag.map((post_tag) => (
               <div
