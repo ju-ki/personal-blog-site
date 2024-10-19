@@ -1,11 +1,11 @@
 import { AxiosResponseType } from '@/types/common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { getInitCSRFSetting } from '../auth';
-import { PostType, StatusType } from '@/types/article';
-export async function fetchAllPosts(): Promise<PostType[]> {
+import { PaginatePostType, PostType, StatusType } from '@/types/article';
+export async function fetchAllPosts(page: number = 1): Promise<PaginatePostType> {
   try {
-    const response = await axios.get('http://localhost/api/posts');
-    return response.data as PostType[];
+    const response = await axios.get(`http://localhost/api/posts?page=${page}`);
+    return response.data as PaginatePostType;
   } catch (error) {
     console.error(error);
     throw new Error('記事情報の取得に失敗しました');
@@ -22,7 +22,6 @@ export async function fetchDetailPost(postId: number): Promise<AxiosResponseType
       withCredentials: true,
       withXSRFToken: true,
     });
-    console.log(response.data);
 
     return response.data;
   } catch (err) {

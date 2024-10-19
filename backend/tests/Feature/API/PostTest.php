@@ -22,11 +22,24 @@ class PostTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
-            '*' => [
-                'id',
-                'title',
-                'tags',
-                'content'
+            'data' => [
+                '*' => [
+                    'id',
+                    'title',
+                    'tags',
+                    'content'
+                ],
+            ],
+            'current_page',
+            'last_page',
+            'prev_page_url',
+            'next_page_url',
+            'links' => [
+                '*' => [
+                    'url',
+                    'label',
+                    'active'
+                ],
             ],
         ]);
     }

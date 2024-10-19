@@ -37,3 +37,28 @@ export type PostType = {
   created_at: Date;
   post_tag: PostTag[];
 };
+
+export type PaginationProps = {
+  paginationData: {
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    links: { url: string | null; label: string; active: boolean }[];
+  };
+};
+
+export type PaginationLinkType = {
+  url: string | null;
+  label: string;
+  active: boolean;
+};
+
+export type PaginatePostType = {
+  data: PostType[];
+  current_page: number;
+  last_page: number;
+  prev_page_url: string | null;
+  next_page_url: string | null;
+  links: PaginationLinkType[];
+};
