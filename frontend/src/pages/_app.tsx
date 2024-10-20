@@ -4,6 +4,8 @@ import type { AppProps } from 'next/app';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   const user = useRouter();
@@ -27,5 +29,10 @@ export default function App({ Component, pageProps }: AppProps) {
       user.push('/login');
     }
   };
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <ToastContainer />
+      <Component {...pageProps} />
+    </>
+  );
 }

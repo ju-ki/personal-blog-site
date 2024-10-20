@@ -33,7 +33,7 @@ export type PostType = {
   title: string;
   tag?: string[];
   category_id: number;
-  category: CategoryType;
+  category?: CategoryType;
   content: string;
   status: StatusType;
   user_id?: number;

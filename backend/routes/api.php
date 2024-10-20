@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ImageController;
+use App\Http\Controllers\API\PostBackupController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\TagController;
 use Illuminate\Http\Request;
@@ -20,6 +21,12 @@ Route::get('/posts', [PostController::class, 'index']);
 //auth:sanctumだけで行けるらしいが、401が出てしまうので一時的に両方出すようにする
 Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
+    Route::prefix('/backup')->group(function () {
+        Route::post('/posts/create', [PostBackupController::class, 'create']);
+        Route::post('/posts/update', [PostBackupController::class, 'updatePost']);
+        Route::get('/posts/detail', [PostBackupController::class, 'show']);
+        Route::delete('/posts/delete', [PostBackupController::class, 'delete']);
+    });
     Route::post('/posts/create', [PostController::class, 'create']);
     Route::post('/posts/update', [PostController::class, 'updatePost']);
     Route::get('/posts/detail', [PostController::class, 'show']);
