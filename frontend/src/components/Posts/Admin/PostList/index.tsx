@@ -1,4 +1,4 @@
-import { deletePost, fetchAllPosts, updatePost, updateStatus } from '@/hooks/api/posts';
+import { deletePost, updateStatus } from '@/hooks/api/posts';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,27 +9,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-import { PostType, StatusNameType, StatusType } from '@/types/article';
+import { StatusNameType, StatusType } from '@/types/article';
 import Loading from '@/components/Common/Loading';
+import PaginationLinkItem from '@/components/Common/Pagination';
+import { usePaginationStore } from '@/store/paginationStore';
 
 const AdminPostList = () => {
-  const [posts, setPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const fetchPosts = async () => {
-    try {
-      setLoading(true);
-      const posts: PostType[] = await fetchAllPosts();
-      setLoading(false);
-      setPosts(posts);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const { fetchPaginateData, currentPage, paginateData, updatePostStatus } = usePaginationStore();
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    setLoading(true);
+    fetchPaginateData(currentPage);
+    setLoading(false);
+  }, [currentPage, fetchPaginateData]);
 
   /**
    * 記事のステータス状態を変更する処理
@@ -41,9 +34,7 @@ const AdminPostList = () => {
     try {
       const response = await updateStatus(id, value as StatusType);
       if (Object.values(StatusType).includes(response.data.status as StatusType)) {
-        setPosts((prevPosts) =>
-          prevPosts.map((post) => (post.id === id ? { ...post, status: value as StatusType } : post))
-        );
+        updatePostStatus(id, response.data.status as StatusType);
       } else {
         console.log('Invalid status:', value);
       }
@@ -69,9 +60,9 @@ const AdminPostList = () => {
       setLoading(false);
     }
   };
+
   return (
     <>
-      {loading && <p>Loading...</p>}
       <table className='min-w-full table-auto border-collapse'>
         <thead>
           <tr className='border-b'>
@@ -84,48 +75,58 @@ const AdminPostList = () => {
           </tr>
         </thead>
         <tbody>
-          {posts.map((post) => (
-            <tr key={post.id} className='border-b'>
-              <td className='px-4 py-2'>
-                <Link className='underline' href={`/admin/post/${post.id}`}>
-                  {post.title}
-                </Link>
-              </td>
-              <td className='px-4 py-2'>100</td>
-              <td className='px-4 py-2'>{new Date(post.created_at).toLocaleDateString('sv-SE')}</td>
-              <td className='px-4 py-2'>
-                <DropdownMenu>
-                  <DropdownMenuTrigger>{StatusNameType[post.status]}</DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuRadioGroup
-                      value={post.status}
-                      onValueChange={(value: string) => switchStatus(value, post.id)}
-                    >
-                      <DropdownMenuRadioItem value='private'>非公開</DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value='public'>公開</DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value='draft'>下書き</DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </td>
-              <td className='px-4 py-2'>
-                <Link href={`/admin/post/edit/${post.id}`}>
-                  <Button className='px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600'>編集</Button>
-                </Link>
-              </td>
-              <td className='px-4 py-2'>
-                <Button
-                  className='px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600'
-                  onClick={() => handleDeletePost(post.id)}
-                  disabled={loading}
-                >
-                  削除
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {paginateData &&
+            paginateData.data.map((post) => (
+              <>
+                {post.id !== undefined && (
+                  <tr key={post.id} className='border-b'>
+                    <td className='px-4 py-2'>
+                      <Link className='underline' href={`/admin/post/${post.id}`}>
+                        {post.title}
+                      </Link>
+                    </td>
+                    <td className='px-4 py-2'>100</td>
+                    <td className='px-4 py-2'>{new Date(post.created_at).toLocaleDateString('sv-SE')}</td>
+                    <td className='px-4 py-2'>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>{StatusNameType[post.status]}</DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuRadioGroup
+                            value={post.status}
+                            onValueChange={(value: string) => switchStatus(value, post.id)}
+                          >
+                            <DropdownMenuRadioItem value='private'>非公開</DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value='public'>公開</DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value='draft'>下書き</DropdownMenuRadioItem>
+                          </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                    <td className='px-4 py-2'>
+                      <Link href={`/admin/post/edit/${post.id}`}>
+                        <Button className='px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600'>編集</Button>
+                      </Link>
+                    </td>
+                    <td className='px-4 py-2'>
+                      <Button
+                        className='px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600'
+                        onClick={() => handleDeletePost(post.id)}
+                        disabled={loading}
+                      >
+                        削除
+                      </Button>
+                    </td>
+                  </tr>
+                )}
+              </>
+            ))}
         </tbody>
       </table>
+      {paginateData && (
+        <div className='my-2'>
+          <PaginationLinkItem />
+        </div>
+      )}
       <Loading isLoading={loading} />
     </>
   );

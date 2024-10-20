@@ -25,7 +25,7 @@ class PostService
      */
     public function getAllPosts()
     {
-        $allPosts = Post::all();
+        $allPosts = Post::paginate(10);
         return $allPosts;
     }
 
