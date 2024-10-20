@@ -4,21 +4,21 @@ namespace Tests\Unit;
 
 use App\Enum\PostStatus;
 use App\Models\Category;
-use App\Models\Post;
+use App\Models\PostBackups;
 use App\Models\User;
-use App\Services\PostService;
+use App\Services\PostBackupService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertTrue;
 
-class PostTest extends TestCase
+class PostBackupTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected Post $post;
-    protected PostService $service;
+    protected PostBackups $post;
+    protected PostBackupService $service;
 
     protected function setUp(): void
     {
@@ -36,7 +36,7 @@ class PostTest extends TestCase
      */
     public function test_create_new_post(): void
     {
-        $this->service = app()->make(PostService::class);
+        $this->service = app()->make(PostBackupService::class);
 
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -46,15 +46,15 @@ class PostTest extends TestCase
         $this->actingAs($user);
         $this->assertAuthenticated();
         $this->assertAuthenticatedAs($user);
-        $this->post = new Post;
-        $this->post->title = 'Test Post';
+        $this->post = new PostBackups;
+        $this->post->title = 'Test PostBackups';
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
 
 
         $response = $this->service->create($this->post, []);
         //デフォルト時は非公開状態(仮)
-        assertTrue($response->title === 'Test Post');
+        assertTrue($response->title === 'Test PostBackups');
         assertTrue($response->content === 'Test Content');
         assertTrue($response->user_id === $user->id);
         assertTrue($response->status === 'private');
@@ -67,7 +67,7 @@ class PostTest extends TestCase
      */
     public function test_create_new_post_with_public(): void
     {
-        $this->service = app()->make(PostService::class);
+        $this->service = app()->make(PostBackupService::class);
 
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -77,15 +77,15 @@ class PostTest extends TestCase
         $this->actingAs($user);
         $this->assertAuthenticated();
         $this->assertAuthenticatedAs($user);
-        $this->post = new Post;
-        $this->post->title = 'Test Post';
+        $this->post = new PostBackups;
+        $this->post->title = 'Test PostBackups';
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
 
 
         $response = $this->service->create($this->post, []);
-        assertTrue($response->title === 'Test Post');
+        assertTrue($response->title === 'Test PostBackups');
         assertTrue($response->content === 'Test Content');
         assertTrue($response->user_id === $user->id);
         assertTrue($response->status === 'public');
@@ -97,7 +97,7 @@ class PostTest extends TestCase
 
     public function test_get_all_posts_for_admin()
     {
-        $this->service = app()->make(PostService::class);
+        $this->service = app()->make(PostBackupService::class);
 
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -107,14 +107,14 @@ class PostTest extends TestCase
         $this->actingAs($user);
         $this->assertAuthenticated();
         $this->assertAuthenticatedAs($user);
-        $this->post = new Post;
-        $this->post->title = 'Test Post';
+        $this->post = new PostBackups;
+        $this->post->title = 'Test PostBackups';
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
         $this->service->create($this->post, []);
 
-        $this->post = new Post;
+        $this->post = new PostBackups;
         $this->post->title = 'Test Post2';
         $this->post->content = 'Test Content2';
         $this->post->user_id = $user->id;
@@ -127,7 +127,7 @@ class PostTest extends TestCase
         assertTrue(count($allPosts) === 2);
 
         //中身のテスト
-        $this->assertEquals('Test Post', $allPosts[0]->title);
+        $this->assertEquals('Test PostBackups', $allPosts[0]->title);
         $this->assertEquals('Test Content', $allPosts[0]->content);
         $this->assertEquals($user->id, $allPosts[0]->user_id);
         assertTrue($allPosts[0]->status === 'public');
@@ -143,7 +143,7 @@ class PostTest extends TestCase
      */
     public function test_get_post_detail()
     {
-        $this->service = app()->make(PostService::class);
+        $this->service = app()->make(PostBackupService::class);
 
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -153,8 +153,8 @@ class PostTest extends TestCase
         $this->actingAs($user);
         $this->assertAuthenticated();
         $this->assertAuthenticatedAs($user);
-        $this->post = new Post;
-        $this->post->title = 'Test Post';
+        $this->post = new PostBackups;
+        $this->post->title = 'Test PostBackups';
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
@@ -171,7 +171,7 @@ class PostTest extends TestCase
      */
     public function test_update_post_detail()
     {
-        $this->service = app()->make(PostService::class);
+        $this->service = app()->make(PostBackupService::class);
 
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -181,14 +181,14 @@ class PostTest extends TestCase
         $this->actingAs($user);
         $this->assertAuthenticated();
         $this->assertAuthenticatedAs($user);
-        $this->post = new Post;
-        $this->post->title = 'Test Post';
+        $this->post = new PostBackups;
+        $this->post->title = 'Test PostBackups';
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
         $response = $this->service->create($this->post, []);
 
-        $response->title = 'Test Post Updated';
+        $response->title = 'Test PostBackups Updated';
         $postDetail = $this->service->updatePost($response);
 
         assertEquals($response->id, $postDetail->id);
@@ -199,7 +199,7 @@ class PostTest extends TestCase
      */
     public function test_delete_post_detail()
     {
-        $this->service = app()->make(PostService::class);
+        $this->service = app()->make(PostBackupService::class);
 
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -209,8 +209,8 @@ class PostTest extends TestCase
         $this->actingAs($user);
         $this->assertAuthenticated();
         $this->assertAuthenticatedAs($user);
-        $this->post = new Post;
-        $this->post->title = 'Test Post';
+        $this->post = new PostBackups;
+        $this->post->title = 'Test PostBackups';
         $this->post->content = 'Test Content';
         $this->post->user_id = $user->id;
         $this->post->status = 'public';
@@ -218,55 +218,8 @@ class PostTest extends TestCase
 
         $this->service->delete($response->id);
 
-        $this->assertDatabaseMissing('posts', [
+        $this->assertDatabaseMissing('post_backups', [
             'id' => $response->id,
         ]);
-    }
-    /**
-     * ステータスをpublicにするテスト
-     *
-     * @return void
-     */
-    public function test_update_post_status()
-    {
-        $this->service = app()->make(PostService::class);
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
-        ]);
-        $this->post = new Post;
-        $this->post->title = 'Test Post';
-        $this->post->content = 'Test Content';
-        $this->post->user_id = $user->id;
-        $this->post->status = 'private';
-        $response = $this->service->create($this->post, []);
-
-        $response = $this->service->updateStatus($response->id, 'public');
-
-        assertTrue($response->status === 'public');
-    }
-
-    /**
-     * ステータスをdraftにするテスト
-     *
-     * @return void
-     */
-    public function test_update_post_status_to_draft()
-    {
-        $this->service = app()->make(PostService::class);
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
-        ]);
-        $this->post = new Post;
-        $this->post->title = 'Test Post';
-        $this->post->content = 'Test Content';
-        $this->post->user_id = $user->id;
-        $this->post->status = 'public';
-        $response = $this->service->create($this->post, []);
-
-        $response = $this->service->updateStatus($response->id, 'draft');
-
-        assertTrue($response->status === 'draft');
     }
 }

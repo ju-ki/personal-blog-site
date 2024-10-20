@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use App\Enum\PostStatus;
-use App\Models\Post;
+use App\Models\PostBackups;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class PostService
+class PostBackupService
 {
     /**
      * 記事の一覧を返却
@@ -15,7 +14,7 @@ class PostService
     public function get_posts()
     {
         //TODO: 一旦leftJoinで対応(登録時の処理ができていないため)
-        $posts = Post::all();
+        $posts = PostBackups::all();
 
         return $posts;
     }
@@ -25,7 +24,7 @@ class PostService
      */
     public function getAllPosts()
     {
-        $allPosts = Post::paginate(10);
+        $allPosts = PostBackups::all();
         return $allPosts;
     }
 
@@ -33,28 +32,28 @@ class PostService
      * 記事詳細を取得する
      *
      * @param integer $post_id
-     * @return Post
+     * @return PostBackups
      */
     public function getPostDetail(int $post_id)
     {
-        $postDetail = Post::with(['postTag.tag', 'category'])->where('id',  $post_id)->first();
+        $postDetail = PostBackups::with(['postTag.tag', 'category'])->where('id',  $post_id)->first();
         return $postDetail;
     }
 
     /**
      * 記事作成
      *
-     * @param Post $post
+     * @param PostBackups $post
      * @param array $tagIds
-     * @return Post
+     * @return PostBackups
      * @throws Exception
      */
-    public function create(Post $post, array $tagIds)
+    public function create(PostBackups $post, array $tagIds)
     {
         try {
             DB::beginTransaction();
             // 記事の作成処理
-            $newPosts = Post::create([
+            $newPosts = PostBackups::create([
                 'title' => $post->title,
                 'content' => $post->content,
                 'user_id' => $post->user_id,
@@ -62,7 +61,7 @@ class PostService
                 'category_id' => isset($post->category_id) ? $post->category_id : 1,
             ]);
 
-            $newPosts = Post::where('id', '=', $newPosts->id)->first();
+            $newPosts = PostBackups::where('id', '=', $newPosts->id)->first();
 
             if (!empty($tagIds)) {
                 $newPosts->tags()->attach($tagIds);
@@ -81,37 +80,19 @@ class PostService
     /**
      * 記事編集
      *
-     * @param Post $post
-     * @return Post
+     * @param PostBackups $post
+
+     * @return PostBackups
      */
-    public function updatePost(Post $post)
+    public function updatePost(PostBackups $post)
     {
         // 記事の編集処理
-        $newPosts = Post::where('id', $post->id)->update([
+        $newPosts = PostBackups::where('id', $post->id)->update([
             'title' => $post->title,
             'content' => $post->content,
         ]);
 
-        $newPosts = Post::where('id', '=', $post->id)->first();
-        return $newPosts;
-    }
-
-    /**
-     * 記事ステータスの変更
-     *
-     * @param int $post_id
-     * @param string $status
-     * @return Post
-     */
-    public function updateStatus(int $post_id, string $status)
-    {
-        $statusNum = PostStatus::convertStatusToNum($status);
-        // 該当記事取得
-        Post::where('id', '=', $post_id)->update([
-            'status' => $statusNum
-        ]);
-
-        $newPosts = Post::where('id', '=', $post_id)->first();
+        $newPosts = PostBackups::where('id', '=', $post->id)->first();
         return $newPosts;
     }
 
@@ -124,6 +105,6 @@ class PostService
     public function delete(int $id)
     {
         // 記事の削除処理
-        Post::find($id)->delete();
+        PostBackups::find($id)->delete();
     }
 }

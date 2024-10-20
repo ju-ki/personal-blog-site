@@ -18,9 +18,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $category_id
  * @property PostStatus $status
  */
-class Post extends Model
+class PostBackups extends Model
 {
     use HasFactory;
+
+    protected $table = 'post_backups';
 
     protected $fillable = ['title', 'content', 'user_id', 'status', 'category_id'];
 

@@ -1,3 +1,4 @@
+import { CategoryType } from './category';
 import { TagType } from './tag';
 
 export type Article = {
@@ -31,6 +32,8 @@ export type PostType = {
   id?: number;
   title: string;
   tag?: string[];
+  category_id: number;
+  category?: CategoryType;
   content: string;
   status: StatusType;
   user_id?: number;

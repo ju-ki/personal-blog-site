@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Post;
-use App\Services\PostService;
+use App\Models\PostBackups;
+use App\Services\PostBackupService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PostController extends Controller
+class PostBackupController extends Controller
 {
-    protected PostService $postService;
+    protected PostBackupService $postService;
 
-    public function __construct(PostService $postService)
+    public function __construct(PostBackupService $postService)
     {
         $this->postService = $postService;;
     }
@@ -33,7 +33,7 @@ class PostController extends Controller
     public function create(Request $request)
     {
         try {
-            $post = new Post();
+            $post = new PostBackups();
             $post->title = $request->title;
             $post->content = $request->content;
             $post->category_id = $request->category_id;
@@ -61,24 +61,12 @@ class PostController extends Controller
      */
     public function updatePost(Request $request)
     {
-        $post = new Post();
+        $post = new PostBackups();
         $post->id = $request->id;
         $post->title = $request->title;
         $post->content = $request->content;
         $post->user_id = Auth::id();
         $posts = $this->postService->updatePost($post);
-
-        return response()->json($posts, 200);
-    }
-
-    /**
-     * ステータスを変える処理
-     *
-     * @param Request $request
-     */
-    public function updateStatus(Request $request)
-    {
-        $posts = $this->postService->updateStatus($request->id, $request->status);
 
         return response()->json($posts, 200);
     }
