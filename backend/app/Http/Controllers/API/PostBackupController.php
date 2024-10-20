@@ -72,18 +72,6 @@ class PostBackupController extends Controller
     }
 
     /**
-     * ステータスを変える処理
-     *
-     * @param Request $request
-     */
-    public function updateStatus(Request $request)
-    {
-        $posts = $this->postService->updateStatus($request->id, $request->status);
-
-        return response()->json($posts, 200);
-    }
-
-    /**
      * 記事を削除するAPI
      *
      * @param Request $request
