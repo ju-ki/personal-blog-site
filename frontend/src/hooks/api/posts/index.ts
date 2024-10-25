@@ -136,3 +136,17 @@ export async function backupPost(postType: PostType): Promise<AxiosResponseType>
     return { status: 500, message: axiosError.message ? axiosError.message : 'サーバーでエラーが発生しました' };
   }
 }
+
+export async function fetchAllDraft(): Promise<PostType[]> {
+  try {
+    await getInitCSRFSetting();
+    const response = await axios.get(`http://localhost/api/backup/posts`, {
+      withCredentials: true,
+      withXSRFToken: true,
+    });
+    return response.data as PostType[];
+  } catch (error) {
+    console.error(error);
+    throw new Error('記事情報の取得に失敗しました');
+  }
+}

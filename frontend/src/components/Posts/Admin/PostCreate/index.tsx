@@ -6,33 +6,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import TagList from '../Tag';
 import { PostType } from '@/types/article';
 import CategoryList from '../Category';
 import { debounce } from 'lodash';
 import { showToast } from '@/components/Common/Toast';
+import DraftList from '../Draft';
+
+const schema = z.object({
+  id: z.number().optional(),
+  title: z.string().min(1, 'タイトルを入力して下さい'),
+  content: z.string({ message: 'コンテントは必須です' }).min(1, 'コンテントを入力して下さい'),
+  tags: z.array(z.number()).max(5, 'タグは最大で5つまでです').optional(),
+  category_id: z.number({ message: 'カテゴリは必須です' }).min(1, 'カテゴリは必須です'),
+});
+export type FormData = z.infer<typeof schema>;
 
 const CreatePost = () => {
   const Editor = dynamic(() => import('@/components/Posts/Card/Editor/index'), { ssr: false });
   const router = useRouter();
-  const schema = z.object({
-    id: z.number().optional(),
-    title: z.string().min(1, 'タイトルを入力して下さい'),
-    content: z.string({ message: 'コンテントは必須です' }).min(1, 'コンテントを入力して下さい'),
-    tags: z.array(z.number()).max(5, 'タグは最大で5つまでです').optional(),
-    category_id: z.number({ message: 'カテゴリは必須です' }).min(1, 'カテゴリは必須です'),
-  });
-  type FormData = z.infer<typeof schema>;
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    watch,
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const methods = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { setValue, formState, watch } = methods;
   const tags = watch('tags', []);
+  const category = watch('category_id');
+  const content = watch('content');
 
   const debouncedBackup = useCallback(
     debounce(async (data: FormData) => {
@@ -54,7 +53,7 @@ const CreatePost = () => {
 
   //コンテントが更新されたらバックアップを開始する
   useEffect(() => {
-    const subscription = watch((value, { name }) => {
+    const subscription = methods.watch((value, { name }) => {
       if (name === 'content') {
         debouncedBackup(value as FormData);
       }
@@ -74,51 +73,65 @@ const CreatePost = () => {
   };
   return (
     <>
-      <div className='mt-10 p-6  rounded-lg shadow-lg'>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='mb-4'>
-            {errors.title && <span className='text-red-500 mb-2 block'>{errors.title.message}</span>}
-            <Label htmlFor='title' className='block text-lg font-medium text-gray-700 mb-2'>
-              タイトル
-            </Label>
-            <Input
-              {...register('title')}
-              id='title'
-              className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-              type='text'
-            />
-          </div>
-          <div className='mb-4'>
-            {errors.category_id && <span className='text-red-500 mb-2 block'>{errors.category_id.message}</span>}
-            <Label htmlFor='categories' className='block text-lg font-medium text-gray-700 mb-2'>
-              カテゴリ
-            </Label>
-            <CategoryList setValue={(selectedCategoryId: number) => setValue('category_id', selectedCategoryId)} />
-          </div>
-          <div className='mb-4'>
-            {errors.tags && <span className='text-red-500 mb-2 block'>{errors.tags.message}</span>}
-            <Label htmlFor='tags' className='block text-lg font-medium text-gray-700 mb-2'>
-              タグ
-            </Label>
-            <TagList
-              selectedTagIds={tags as number[]}
-              setValue={(selectedTagIds: number[]) => setValue('tags', selectedTagIds)} // タグIDをセット
-            />
-          </div>
-          <div className='mb-4'>
-            {errors.content && <span className='text-red-500 mb-2 block'>{errors.content.message}</span>}
-            <Label htmlFor='content' className='block text-lg font-medium text-gray-700 mb-2'>
-              コンテント
-            </Label>
-            <Editor setValue={setValue} name='content' />
-          </div>
-          <div className='text-right'>
-            <Button className='px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'>
-              投稿
-            </Button>
-          </div>
-        </form>
-      </div>
+      <FormProvider {...methods}>
+        <div className='mt-10 p-6  rounded-lg shadow-lg'>
+          <DraftList />
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <div className='mb-4'>
+              {formState.errors.title && (
+                <span className='text-red-500 mb-2 block'>{formState.errors.title.message}</span>
+              )}
+              <Label htmlFor='title' className='block text-lg font-medium text-gray-700 mb-2'>
+                タイトル
+              </Label>
+              <Input
+                {...methods.register('title')}
+                id='title'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                type='text'
+              />
+            </div>
+            <div className='mb-4'>
+              {formState.errors.category_id && (
+                <span className='text-red-500 mb-2 block'>{formState.errors.category_id.message}</span>
+              )}
+              <Label htmlFor='categories' className='block text-lg font-medium text-gray-700 mb-2'>
+                カテゴリ
+              </Label>
+              <CategoryList
+                currentCategory={category}
+                setValue={(selectedCategoryId: number) => setValue('category_id', selectedCategoryId)}
+              />
+            </div>
+            <div className='mb-4'>
+              {formState.errors.tags && (
+                <span className='text-red-500 mb-2 block'>{formState.errors.tags.message}</span>
+              )}
+              <Label htmlFor='tags' className='block text-lg font-medium text-gray-700 mb-2'>
+                タグ
+              </Label>
+              <TagList
+                selectedTagIds={tags as number[]}
+                setValue={(selectedTagIds: number[]) => setValue('tags', selectedTagIds)} // タグIDをセット
+              />
+            </div>
+            <div className='mb-4'>
+              {formState.errors.content && (
+                <span className='text-red-500 mb-2 block'>{formState.errors.content.message}</span>
+              )}
+              <Label htmlFor='content' className='block text-lg font-medium text-gray-700 mb-2'>
+                コンテント
+              </Label>
+              <Editor setValue={setValue} editorState={content} name='content' />
+            </div>
+            <div className='text-right'>
+              <Button className='px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'>
+                投稿
+              </Button>
+            </div>
+          </form>
+        </div>
+      </FormProvider>
     </>
   );
 };

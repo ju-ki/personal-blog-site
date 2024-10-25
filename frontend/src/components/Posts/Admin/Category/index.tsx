@@ -2,13 +2,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { fetchAllCategories } from '@/hooks/api/category';
 import { CategoryType } from '@/types/category';
 import React, { useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
-interface CategoryListProps {
-  setValue: (selectedCategoryId: number) => void;
-}
-
-const CategoryList: React.FC<CategoryListProps> = ({ setValue }) => {
+const CategoryList: React.FC = () => {
+  const { setValue, watch } = useFormContext();
   const [categoriesList, setCategoriesList] = useState<CategoryType[]>([]);
+  const categoryId = watch('category_id');
 
   useEffect(() => {
     getAllCategories();
@@ -20,11 +19,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ setValue }) => {
   }
 
   const handleSetValue = (val: string) => {
-    setValue(Number.parseInt(val));
+    setValue('category_id', Number.parseInt(val));
   };
   return (
     <div className='w-full'>
-      <Select onValueChange={handleSetValue}>
+      <Select onValueChange={handleSetValue} value={categoryId ? categoryId.toString() : ''}>
         <SelectTrigger>
           <SelectValue placeholder='カテゴリを選択して下さい' />
         </SelectTrigger>
