@@ -1,4 +1,4 @@
-import React, { ComponentProps, useCallback } from 'react';
+import React, { ComponentProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -14,37 +14,99 @@ import ClickableLinkPlugin from '@/plugins/ClickablePlugin';
 import LexicalAutoLinkPlugin from '@/plugins/AutoLinkPlugin';
 import { ImageNode } from '@/plugins/nodes/ImageNode';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { UseFormSetValue } from 'react-hook-form';
-import type { EditorState } from 'lexical';
+import { useFormContext } from 'react-hook-form';
+import { createEditor, EditorState } from 'lexical';
 import useAutoResize from '@/hooks/api/posts/useAutoSize';
+import { debounce } from 'lodash';
+import { showToast } from '@/components/Common/Toast';
+import { backupPost } from '@/hooks/api/posts';
+import { PostType } from '@/types/article';
 
 interface EditorProps {
-  setValue?: UseFormSetValue<any>;
-  name?: string;
   editorState?: string;
   isEditable?: boolean;
+  onChange: (content: string) => void;
 }
 
-const Editor: React.FC<EditorProps> = ({ setValue, name, editorState, isEditable = true }) => {
+const Editor: React.FC<EditorProps> = ({ onChange, editorState, isEditable = true }) => {
+  const editor = useMemo(() => createEditor(), []);
+  const [serializedEditorState, setSerializedEditorState] = useState<string | null>(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const { watch, getValues } = useFormContext();
+  const content = watch('content');
+
+  useEffect(() => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      if (serializedEditorState) {
+        onChange(serializedEditorState);
+        const initialEditorState = editor.parseEditorState(serializedEditorState);
+        editor.setEditorState(initialEditorState);
+      }
+    }
+  }, [isFirstRender, serializedEditorState, editor, onChange]);
+
+  useEffect(() => {
+    if (content) {
+      setSerializedEditorState(content);
+    }
+  }, [content]);
+
+  const handleChange = useCallback(
+    (changedEditorState: EditorState) => {
+      setSerializedEditorState(JSON.stringify(changedEditorState.toJSON()));
+    },
+    [setSerializedEditorState]
+  );
+
+  const debouncedBackup = useCallback(
+    debounce(async () => {
+      const id = getValues('id');
+      const title = getValues('title');
+      const category_id = getValues('category_id');
+      const tags = getValues('tags');
+      console.log(serializedEditorState);
+
+      if (title.length) {
+        showToast('info', 'バックアップ中です....');
+        const response = await backupPost({
+          id: id,
+          title: title,
+          content: serializedEditorState,
+          category_id: category_id,
+          tag: tags,
+        } as PostType);
+
+        if (response.status < 300) {
+          showToast('success', '保存しました!');
+        } else {
+          showToast('error', 'バックアップに失敗しました');
+        }
+      }
+    }, 10000), // 10秒ごとにバックアップ
+    []
+  );
+
+  //コンテントが更新されたらバックアップを開始する
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'content') {
+        debouncedBackup();
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, debouncedBackup, serializedEditorState]);
+
+  const autoResizeRef = useAutoResize();
+
   const initialConfig: ComponentProps<typeof LexicalComposer>['initialConfig'] = {
     namespace: 'MyEditor',
     theme: EditorTheme,
     nodes: [HeadingNode, LinkNode, AutoLinkNode, ImageNode, QuoteNode],
     onError: (error) => console.error(error),
-    editorState: editorState && editorState,
+    editorState: editorState,
     editable: isEditable,
   };
-
-  const onChange = useCallback(
-    (editorState: EditorState) => {
-      if (setValue && name) {
-        setValue(name, JSON.stringify(editorState.toJSON()));
-      }
-    },
-    [name, setValue]
-  );
-
-  const autoResizeRef = useAutoResize();
 
   return (
     <div className='h-full flex flex-col'>
@@ -56,7 +118,7 @@ const Editor: React.FC<EditorProps> = ({ setValue, name, editorState, isEditable
             <LinkPlugin validateUrl={validateUrl} />
             <ClickableLinkPlugin />
             <LexicalAutoLinkPlugin />
-            <OnChangePlugin onChange={onChange} />
+            <OnChangePlugin onChange={handleChange} />
           </>
         )}
         <RichTextPlugin

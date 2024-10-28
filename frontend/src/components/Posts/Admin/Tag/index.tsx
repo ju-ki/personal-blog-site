@@ -8,8 +8,8 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface TagListProps {
-  selectedTagIds: number[]; // 選択されたタグのIDのリスト
-  setValue: (selectedTagIds: number[]) => void; // タグのIDをセットする関数
+  selectedTagIds: number[];
+  setValue: (selectedTagIds: number[]) => void;
 }
 
 const TagList: React.FC<TagListProps> = ({ selectedTagIds, setValue }) => {
