@@ -13,11 +13,12 @@ import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 const DraftList: React.FC = () => {
-  const { setValue } = useFormContext();
   const [draftList, setDraftList] = useState<PostType[]>([]);
+  const { setValue } = useFormContext();
   useEffect(() => {
     fetchAllDrafts();
   }, []);
+
   const fetchAllDrafts = async () => {
     const response = await fetchAllDraft();
     setDraftList(response);
@@ -26,11 +27,10 @@ const DraftList: React.FC = () => {
   const handleSetDraft = (val: string) => {
     const filteredDraft = draftList.find((draft) => draft.id === Number.parseInt(val));
     if (filteredDraft) {
-      setValue('id', filteredDraft.id);
+      setValue('id', filteredDraft.id); // ID をセット
       setValue('title', filteredDraft.title);
-      setValue('content', filteredDraft.content);
-      setValue('tags', filteredDraft.tag || []);
-      setValue('category_id', filteredDraft.category_id);
+      setValue('category_id', filteredDraft.category_id); // カテゴリをセット
+      setValue('content', filteredDraft.content); // コンテントをセット
     }
   };
 
