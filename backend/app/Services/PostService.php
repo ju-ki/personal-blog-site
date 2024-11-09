@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Enum\PostStatus;
 use App\Models\Post;
+use App\Models\PostBackups;
 use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class PostService
@@ -25,8 +27,23 @@ class PostService
      */
     public function getAllPosts()
     {
-        $allPosts = Post::paginate(10);
-        return $allPosts;
+        $draftPosts = PostBackups::all();
+        $fairCopiedPosts = Post::whereIn('status', [PostStatus::Public, PostStatus::Private])->get();
+        $allPosts = $fairCopiedPosts->union($draftPosts)->sortByDesc('created_at')->values();
+
+        $perPage = 10;
+        $currentPage = request()->input('page', 1);
+        $pagedData = $allPosts->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $allPostsPaginated = new LengthAwarePaginator(
+            $pagedData,
+            $allPosts->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return $allPostsPaginated;
     }
 
     /**
@@ -58,7 +75,7 @@ class PostService
                 'title' => $post->title,
                 'content' => $post->content,
                 'user_id' => $post->user_id,
-                'status' => $post->status,
+                'status' => isset($post->status) ? $post->status : PostStatus::Private,
                 'category_id' => isset($post->category_id) ? $post->category_id : 1,
             ]);
 

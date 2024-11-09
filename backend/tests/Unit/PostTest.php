@@ -5,9 +5,11 @@ namespace Tests\Unit;
 use App\Enum\PostStatus;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\PostBackups;
 use App\Models\User;
 use App\Services\PostService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
@@ -268,5 +270,34 @@ class PostTest extends TestCase
         $response = $this->service->updateStatus($response->id, 'draft');
 
         assertTrue($response->status === 'draft');
+    }
+
+    public function test_get_all_paginated_posts()
+    {
+        // PostBackups::factory()->count(10)->create();
+        Post::factory()->count(10)->state(['status' => PostStatus::getStatusName(PostStatus::Public)])->create();
+        Post::factory()->count(10)->state(['status' => PostStatus::getStatusName(PostStatus::Private)])->create();
+
+        $this->service = app()->make(PostService::class);
+
+        $result = $this->service->getAllPosts();
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
+        $this->assertEquals(10, $result->perPage());
+        $this->assertEquals(1, $result->currentPage());
+        $this->assertEquals(20, $result->total());
+        $this->assertCount(10, $result->items());
+
+        $currentPage = 2;
+        request()->merge(['page' => $currentPage]);
+        $result = $this->service->getAllPosts();
+
+        $this->assertEquals($currentPage, $result->currentPage());
+        $this->assertCount(10, $result->items());
+
+        $dates = $result->pluck('created_at')->toArray();
+        $sortedDates = $dates;
+        rsort($sortedDates);
+        $this->assertEquals($sortedDates, $dates);
     }
 }
