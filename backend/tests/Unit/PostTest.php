@@ -274,7 +274,7 @@ class PostTest extends TestCase
 
     public function test_get_all_paginated_posts()
     {
-        // PostBackups::factory()->count(10)->create();
+        PostBackups::factory()->count(10)->create();
         Post::factory()->count(10)->state(['status' => PostStatus::getStatusName(PostStatus::Public)])->create();
         Post::factory()->count(10)->state(['status' => PostStatus::getStatusName(PostStatus::Private)])->create();
 
@@ -285,7 +285,7 @@ class PostTest extends TestCase
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
         $this->assertEquals(10, $result->perPage());
         $this->assertEquals(1, $result->currentPage());
-        $this->assertEquals(20, $result->total());
+        $this->assertEquals(30, $result->total());
         $this->assertCount(10, $result->items());
 
         $currentPage = 2;

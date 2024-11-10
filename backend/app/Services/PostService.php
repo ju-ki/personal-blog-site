@@ -27,21 +27,17 @@ class PostService
      */
     public function getAllPosts()
     {
-        $draftPosts = PostBackups::all();
-        $fairCopiedPosts = Post::whereIn('status', [PostStatus::Public, PostStatus::Private])->get();
-        $allPosts = $fairCopiedPosts->union($draftPosts)->sortByDesc('created_at')->values();
+        $query = Post::select('id', 'title', 'content', 'status', 'user_id', 'created_at')
+            ->whereIn('status', [PostStatus::Public, PostStatus::Private])
+            ->unionAll(
+                PostBackups::select('id', 'title', 'content', 'status', 'user_id', 'created_at')
+            )
+            ->orderByDesc('created_at');
 
         $perPage = 10;
         $currentPage = request()->input('page', 1);
-        $pagedData = $allPosts->slice(($currentPage - 1) * $perPage, $perPage)->values();
 
-        $allPostsPaginated = new LengthAwarePaginator(
-            $pagedData,
-            $allPosts->count(),
-            $perPage,
-            $currentPage,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $allPostsPaginated = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
         return $allPostsPaginated;
     }
