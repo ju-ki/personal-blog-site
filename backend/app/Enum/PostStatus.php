@@ -25,7 +25,7 @@ enum PostStatus: int
             self::Private->value => 0,
             self::Public->value => 1,
             self::Draft->value => 2,
-            default => 999,
+            default => 0,
         };
     }
 
