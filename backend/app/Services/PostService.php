@@ -30,14 +30,26 @@ class PostService
         $query = Post::select('id', 'title', 'content', 'status', 'user_id', 'created_at')
             ->whereIn('status', [PostStatus::Public, PostStatus::Private])
             ->unionAll(
-                PostBackups::select('id', 'title', 'content', 'status', 'user_id', 'created_at')
-            )
-            ->orderByDesc('created_at');
+                PostBackups::select('id', 'title', 'content', 'status', 'user_id', 'created_at')->toBase()
+            );
 
         $perPage = 10;
         $currentPage = request()->input('page', 1);
 
-        $allPostsPaginated = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $result = DB::table(DB::raw("({$query->toSql()}) as sub"))
+            ->mergeBindings($query->getQuery())  // バインディングのマージ
+            ->orderByDesc('created_at')
+            ->paginate($perPage, ['*'], 'page', $currentPage);
+
+        $posts = Post::hydrate($result->items());
+
+        $allPostsPaginated = new LengthAwarePaginator(
+            $posts,
+            $result->total(),
+            $result->perPage(),
+            $result->currentPage(),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
         return $allPostsPaginated;
     }
@@ -71,7 +83,7 @@ class PostService
                 'title' => $post->title,
                 'content' => $post->content,
                 'user_id' => $post->user_id,
-                'status' => isset($post->status) ? $post->status : PostStatus::Private,
+                'status' => isset($post->status) ?  $post->status : PostStatus::Private,
                 'category_id' => isset($post->category_id) ? $post->category_id : 1,
             ]);
 

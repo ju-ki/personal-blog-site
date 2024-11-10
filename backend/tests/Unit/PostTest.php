@@ -123,10 +123,12 @@ class PostTest extends TestCase
         $this->post->status = 'private';
         $this->service->create($this->post, []);
 
-        $allPosts = $this->service->getAllPosts();
-
+        $result = $this->service->getAllPosts();
         //件数テスト
-        assertTrue(count($allPosts) === 2);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
+        $this->assertEquals(2, $result->total());
+
+        $allPosts = $result->items();
 
         //中身のテスト
         $this->assertEquals('Test Post', $allPosts[0]->title);
