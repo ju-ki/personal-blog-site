@@ -1,5 +1,5 @@
 import { deletePost, updateStatus } from '@/hooks/api/posts';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -77,7 +77,7 @@ const AdminPostList = () => {
         <tbody>
           {paginateData &&
             paginateData.data.map((post) => (
-              <>
+              <Fragment key={post.id}>
                 {post.id !== undefined && (
                   <tr key={post.id} className='border-b'>
                     <td className='px-4 py-2'>
@@ -118,7 +118,7 @@ const AdminPostList = () => {
                     </td>
                   </tr>
                 )}
-              </>
+              </Fragment>
             ))}
         </tbody>
       </table>

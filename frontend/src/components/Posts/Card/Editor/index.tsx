@@ -65,7 +65,6 @@ const Editor: React.FC<EditorProps> = ({ onChange, editorState, isEditable = tru
       const title = getValues('title');
       const category_id = getValues('category_id');
       const tags = getValues('tags');
-      console.log(serializedEditorState);
 
       if (title.length) {
         showToast('info', 'バックアップ中です....');

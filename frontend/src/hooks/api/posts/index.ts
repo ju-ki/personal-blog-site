@@ -23,7 +23,7 @@ export async function fetchDetailPost(postId: number): Promise<AxiosResponseType
       withXSRFToken: true,
     });
 
-    return response.data;
+    return { status: 200, data: response.data };
   } catch (err) {
     const axiosError = err as AxiosError;
     if (axiosError.response && axiosError.response.status === 422) {
