@@ -11,11 +11,11 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <Header />
-      <div className='flex'>
-        <main className='w-3/4 p-2 max-h-96'>
+      <div className='flex flex-col md:flex-row'>
+        <main className='w-full md:w-3/4 p-2'>
           <Card className=''>{children}</Card>
         </main>
-        <aside className='w-1/4 p-2'>
+        <aside className='w-full md:w-1/4 p-2'>
           <Card>
             <Sidebar />
           </Card>

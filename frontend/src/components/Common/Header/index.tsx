@@ -8,7 +8,7 @@ const Header = () => {
         日々の業務や学習で学んだことや趣味の旅行についてあげていきます
       </p>
       <Link href={'/'}>
-        <p className='text-white text-3xl text-center py-6 cursor-pointer'>Jukiyaの雑記ブログ</p>
+        <h1 className='text-white text-3xl text-center py-6 cursor-pointer'>Jukiyaの雑記ブログ</h1>
       </Link>
     </div>
   );
